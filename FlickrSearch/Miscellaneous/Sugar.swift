@@ -6,6 +6,8 @@
 //  Copyright © 2018 Grigory Entin. All rights reserved.
 //
 
+#if !(canImport(GETracing) && canImport(GEFoundation))
+
 import Foundation
 
 infix operator … : MultiplicationPrecedence
@@ -36,3 +38,5 @@ func x$<T>(_ v: T, function: String = #function, file: String = #file, line: Int
     printDumped("\(type(of: v))", xx$(v), function: function, file: file, line: line)
     return v
 }
+
+#endif
