@@ -31,3 +31,8 @@ func x$<T>(_ v: T?, function: String = #function, file: String = #file, line: In
     printDumped("\(type(of: v))", xx$(v), function: function, file: file, line: line)
     return v
 }
+
+func x$<T>(_ v: T, function: String = #function, file: String = #file, line: Int = #line) -> T {
+    printDumped("\(type(of: v))", xx$(v), function: function, file: file, line: line)
+    return v
+}
