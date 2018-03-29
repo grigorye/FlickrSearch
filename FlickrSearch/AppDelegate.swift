@@ -15,6 +15,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     var window: UIWindow?
 
 
+    let searchControllerDelegate = FlickrSearchControllerDelegate()
+    let searchResultsUpdater = FlickrSearchResultsUpdater()
+
+    func presentSearch() {
+        let rootViewController = window!.rootViewController!
+        let storyboard = rootViewController.storyboard
+        let masterViewController = storyboard?.instantiateViewController(withIdentifier: "Master")as! MasterViewController
+        masterViewController.managedObjectContext = self.persistentContainer.viewContext
+        let searchController = UISearchController(searchResultsController: masterViewController) … {
+            $0.delegate = searchControllerDelegate
+            $0.searchResultsUpdater = searchResultsUpdater
+        }
+        rootViewController.present(searchController, animated: true)
+    }
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let splitViewController = self.window!.rootViewController as! UISplitViewController
@@ -25,6 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let masterNavigationController = splitViewController.viewControllers[0] as! UINavigationController
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
+        
+        DispatchQueue.main.async {
+            self.presentSearch()
+        }
         return true
     }
 
