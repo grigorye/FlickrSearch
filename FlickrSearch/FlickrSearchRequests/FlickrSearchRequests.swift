@@ -28,6 +28,7 @@ struct FlickrPhotosSearchResult : Decodable {
         var photo: [Photo]
 
         struct Photo : Decodable {
+            var farm: Int
             var id: String
             var owner: String
             var secret: String
@@ -66,6 +67,8 @@ extension URLSession {
                 guard httpURLResponse.statusCode == 200 else {
                     throw x$(E.badHTTPResponseStatus(httpURLResponse, body: OptionallyDecodedString(data)))
                 }
+                let json = try JSONSerialization.jsonObject(with: data)
+                _ = x$(json)
                 let stat = try JSONDecoder().decode(FlickrStat.self, from: data)
                 let result: FlickrPhotosSearchResult = try {
                     do {
