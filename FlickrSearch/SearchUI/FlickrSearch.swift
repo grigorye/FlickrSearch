@@ -8,11 +8,12 @@
 
 import Foundation
 
+private let session: URLSession = URLSession(configuration: .default)
+
 class FlickrSearch {
     
     let text: String
     let date: Date
-    let session: URLSession = URLSession(configuration: .default)
     
     func loadMore(completion: @escaping (() throws -> FlickrPhotosSearchResult) -> Void) {
         let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: date) {
