@@ -34,10 +34,8 @@
 		C415386A206C10D20042D8E4 /* MasterItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C4153869206C10D20042D8E4 /* MasterItemCell.xib */; };
 		C415386C206C10D90042D8E4 /* MasterItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C415386B206C10D90042D8E4 /* MasterItemCell.swift */; };
 		C42F6DBD206D6BD900C949B0 /* OptionallyDecodedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42F6DBC206D6BD900C949B0 /* OptionallyDecodedString.swift */; };
-		C455D673206D9DD2002204AD /* GETracing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C460D64C206D9B0600A0641C /* GETracing.framework */; };
 		C455D674206D9DD2002204AD /* GETracing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C460D64C206D9B0600A0641C /* GETracing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C455D67A206D9EFE002204AD /* ModuleExports-GEFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C455D679206D9EFD002204AD /* ModuleExports-GEFoundation.swift */; };
-		C455D67D206D9F4A002204AD /* GEFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C455D67C206D9F4A002204AD /* GEFoundation.framework */; };
 		C455D67E206D9F4A002204AD /* GEFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C455D67C206D9F4A002204AD /* GEFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C455D680206D9F74002204AD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C455D67F206D9F74002204AD /* main.swift */; };
 		C460D649206D9AF300A0641C /* ModuleExports-GETracing.swift in Sources */ = {isa = PBXBuildFile; fileRef = C460D648206D9AF300A0641C /* ModuleExports-GETracing.swift */; };
@@ -169,8 +167,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C455D673206D9DD2002204AD /* GETracing.framework in Frameworks */,
-				C455D67D206D9F4A002204AD /* GEFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,8 +298,10 @@
 				C415382D206C10090042D8E4 /* Sources */,
 				C415382E206C10090042D8E4 /* Frameworks */,
 				C415382F206C10090042D8E4 /* Resources */,
+				C4ECD2F0206DB76C0073C7E7 /* Generate Stubs For Embedded Frameworks */,
 				C455D675206D9DD3002204AD /* Embed Frameworks */,
 				AE1F966C1D124724E3F138A5 /* Embed Sources */,
+				C4ECD2F1206DB9000073C7E7 /* Remove Stubs For Embedded Frameworks */,
 			);
 			buildRules = (
 			);
@@ -425,6 +423,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C4ECD2F0206DB76C0073C7E7 /* Generate Stubs For Embedded Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Stubs For Embedded Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/bin/sh -e";
+			shellScript = "for i in GETracing GEFoundation\ndo\n    touch \"${BUILT_PRODUCTS_DIR:?}\"/\"${i:?}\".framework\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		C4ECD2F1206DB9000073C7E7 /* Remove Stubs For Embedded Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Remove Stubs For Embedded Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/bin/sh -e";
+			shellScript = "for i in GETracing GEFoundation\ndo\n    rm \"${BUILT_PRODUCTS_DIR:?}\"/\"${FRAMEWORKS_FOLDER_PATH:?}\"/\"${i:?}\".framework || true\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C415382D206C10090042D8E4 /* Sources */ = {
