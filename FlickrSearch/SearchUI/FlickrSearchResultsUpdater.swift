@@ -8,10 +8,25 @@
 
 import UIKit
 
+protocol FlickrSearchResultsUpdaterDelegate : class {
+    func flickrSearchResultsUpdaterDidResetSearch(_ updater: FlickrSearchResultsUpdater)
+    func flickrSearchResultsUpdater(_ updater: FlickrSearchResultsUpdater, didLoadMorePhotos morePhotos: [Photo])
+}
+
 class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
     
     var search: FlickrSearch!
     
+    weak var delegate: FlickrSearchResultsUpdaterDelegate!
+    
+    private func didLoadMorePhotos(_ photos: [Photo]) {
+        delegate.flickrSearchResultsUpdater(self, didLoadMorePhotos: photos)
+    }
+    
+    private func didResetSearch() {
+        delegate.flickrSearchResultsUpdaterDidResetSearch(self)
+    }
+
     func updateSearchResults(for searchController: UISearchController) {
         let text = searchController.searchBar.text!
         
@@ -23,6 +38,8 @@ class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
         let search = FlickrSearch(text: x$(text), date: Date())
         self.search = search
         
+        didResetSearch()
+        
         search.loadMore { [oldSearch = search] in
             guard x$(oldSearch === self.search) else {
                 // Ignore no longer actual completion.
@@ -32,8 +49,11 @@ class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
             dispatch($0, catch: { error in
                 _ = x$(error)
                 _ = x$((error as NSError).userInfo)
-            }, or: {
+            }, or: { [weak self] in
                 _ = x$($0)
+                //http://farm{farm}.static.flickr.com/{server}/{id}_{secret}.jpg
+                let photos = $0.photos.photo
+                self?.didLoadMorePhotos(photos)
             })
         }
     }
