@@ -10,6 +10,9 @@ import UIKit.UIApplication
 
 #if canImport(GETracing) && canImport(GEFoundation)
 
+@_exported import GETracing
+@_exported import GEFoundation
+
 import func GEFoundation.defaultLogger
 import var GETracing.loggers
 
