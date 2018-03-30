@@ -28,9 +28,23 @@ class FlickrSearchUITests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func typeForthAndBack(text: String) {
+        let searchField = XCUIApplication().searchFields["Search"]
+        searchField.tap()
+        
+        for c in text {
+            searchField.typeText("\(c)")
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        for _ in (0..<text.count) {
+            searchField.typeText("" + XCUIKeyboardKey.delete.rawValue)
+            Thread.sleep(forTimeInterval: 0.1)
+        }
     }
     
+    func testTyping() {
+        for _ in 0..<10 {
+            typeForthAndBack(text: "Kitten")
+        }
+    }
 }
