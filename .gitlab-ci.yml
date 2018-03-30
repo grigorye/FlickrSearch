@@ -1,0 +1,8 @@
+stages:
+  - build
+build_project:
+  stage: build
+  script:
+    - xcodebuild -sdk iphonesimulator -scheme FlickrSearch -destination 'platform=iOS Simulator,name=iPhone 8 Plus,OS=11.3' -enableCodeCoverage YES test CODE_SIGNING_REQUIRED=NO | xcpretty
+  tags:
+    - xcode_9-3
