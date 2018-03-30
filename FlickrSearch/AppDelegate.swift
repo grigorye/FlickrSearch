@@ -15,16 +15,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
 
     let searchControllerDelegate = FlickrSearchControllerDelegate()
-    let searchResultsUpdater = FlickrSearchResultsUpdater()
 
     func presentSearch() {
         let rootViewController = window!.rootViewController!
         let storyboard = rootViewController.storyboard
         let masterViewController = storyboard?.instantiateViewController(withIdentifier: "Master")as! MasterViewController
-        masterViewController.managedObjectContext = self.persistentContainer.viewContext
         let searchController = UISearchController(searchResultsController: masterViewController) … {
             $0.delegate = searchControllerDelegate
-            $0.searchResultsUpdater = searchResultsUpdater
+            $0.searchResultsUpdater = masterViewController.searchResultsUpdater
         }
         rootViewController.present(searchController, animated: true)
     }
@@ -36,10 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         splitViewController.delegate = self
 
-        let masterNavigationController = splitViewController.viewControllers[0] as! UINavigationController
-        let controller = masterNavigationController.topViewController as! MasterViewController
-        controller.managedObjectContext = self.persistentContainer.viewContext
-        
         DispatchQueue.main.async {
             self.presentSearch()
         }
