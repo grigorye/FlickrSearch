@@ -1,5 +1,5 @@
 //
-//  MasterItemCell.swift
+//  FlickrSearchResultItemCell.swift
 //  FlickrSearch
 //
 //  Created by Grigory Entin on 28.03.2018.
@@ -8,7 +8,7 @@
 
 import UIKit.UICollectionViewCell
 
-class MasterItemCell : UICollectionViewCell {
+class FlickrSearchResultItemCell : UICollectionViewCell {
     
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var textLabel: UILabel!

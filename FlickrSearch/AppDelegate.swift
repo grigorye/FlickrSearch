@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     func presentSearch() {
         let rootViewController = window!.rootViewController!
         let storyboard = rootViewController.storyboard
-        let masterViewController = storyboard?.instantiateViewController(withIdentifier: "Master")as! MasterViewController
+        let masterViewController = storyboard?.instantiateViewController(withIdentifier: "Master")as! FlickrSearchResultsViewController
         let searchController = UISearchController(searchResultsController: masterViewController) … {
             $0.delegate = searchControllerDelegate
             $0.searchResultsUpdater = masterViewController.searchResultsUpdater
@@ -68,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController:UIViewController, onto primaryViewController:UIViewController) -> Bool {
         guard let secondaryAsNavController = secondaryViewController as? UINavigationController else { return false }
-        guard let topAsDetailController = secondaryAsNavController.topViewController as? DetailViewController else { return false }
+        guard let topAsDetailController = secondaryAsNavController.topViewController as? FlickrSearchResultDetailViewController else { return false }
         if topAsDetailController.detailItem == nil {
             // Return true to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
             return true

@@ -1,5 +1,5 @@
 //
-//  MasterViewController.swift
+//  FlickrSearchResultsViewController.swift
 //  FlickrSearch
 //
 //  Created by Grigory Entin on 28/03/2018.
@@ -10,25 +10,28 @@ import UIKit
 
 typealias Photo = FlickrPhotosSearchResult.Photos.Photo
 
-class MasterViewController: UICollectionViewController, FlickrSearchResultsUpdaterDelegate {
+private let cellReuseIdentifier = "FlickrSearchResultItemCell"
+private let cellNibName = "FlickrSearchResultItemCell"
+
+class FlickrSearchResultsViewController: UICollectionViewController, FlickrSearchResultsUpdaterDelegate {
 
     lazy var searchResultsUpdater = FlickrSearchResultsUpdater() … {
         $0.delegate = self
     }
     private var photos = [Photo]()
     
-    var detailViewController: DetailViewController? = nil
+    var detailViewController: FlickrSearchResultDetailViewController? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let collectionView = self.collectionView!
 
-        collectionView.register(UINib(nibName: "MasterItemCell", bundle: nil), forCellWithReuseIdentifier: "Cell")
+        collectionView.register(UINib(nibName: cellNibName, bundle: nil), forCellWithReuseIdentifier: cellReuseIdentifier)
 
         if let split = splitViewController {
             let controllers = split.viewControllers
-            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? FlickrSearchResultDetailViewController
         }
     }
 
@@ -46,7 +49,7 @@ class MasterViewController: UICollectionViewController, FlickrSearchResultsUpdat
                 let object = photos[indexPath.row]
                 _ = x$(object)
                 #if false
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+                let controller = (segue.destination as! UINavigationController).topViewController as! FlickrSearchResultDetailViewController
                 controller.detailItem = object
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
@@ -105,20 +108,20 @@ class MasterViewController: UICollectionViewController, FlickrSearchResultsUpdat
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         assert(indexPath.section == 0)
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
         let photo = photos[indexPath.row]
         configureCell(cell, withPhoto: photo)
         return cell
     }
 
     func configureCell(_ cell: UICollectionViewCell, withPhoto photo: Photo) {
-        (cell as! MasterItemCell) … {
+        (cell as! FlickrSearchResultItemCell) … {
             $0.textLabel.text = photo.id
         }
     }
 }
 
-extension MasterViewController : UICollectionViewDelegateFlowLayout {
+extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 

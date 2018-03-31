@@ -1,5 +1,5 @@
 //
-//  DetailViewController.swift
+//  FlickrSearchResultDetailViewController.swift
 //  FlickrSearch
 //
 //  Created by Grigory Entin on 28/03/2018.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class FlickrSearchResultDetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
 
