@@ -27,10 +27,6 @@ class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
         delegate.flickrSearchResultsUpdaterDidResetSearch(self)
     }
 
-    #if DEBUG
-    var searchesInProgress = [FlickrSearch]()
-    #endif
-    
     func updateSearchResults(for searchController: UISearchController) {
         let text = searchController.searchBar.text!
         
@@ -42,19 +38,10 @@ class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
         let search = FlickrSearch(text: x$(text), date: Date())
         self.search = search
         
-        #if DEBUG
-        searchesInProgress.append(search)
-        #endif
-        
         didResetSearch()
         
         search.loadMore { [oldSearch = search] (throwingResult) in
             DispatchQueue.main.async {
-                #if DEBUG
-                _ = x$(self.searchesInProgress)
-                self.searchesInProgress.remove(at: self.searchesInProgress.index { $0 === oldSearch }!)
-                #endif
-                
                 guard x$(oldSearch === self.search) else {
                     // Ignore no longer actual completion.
                     _ = x$(oldSearch.text)
