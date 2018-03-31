@@ -42,8 +42,8 @@ class FlickrSearchUITests: XCTestCase {
         }
     }
     
-    func testTyping(delay: TimeInterval) {
-        for _ in 0..<10 {
+    func testTyping(delay: TimeInterval, times: Int = 10) {
+        for _ in 0..<times {
             typeForthAndBack(text: "Kittens", delay: delay)
         }
     }
@@ -56,6 +56,12 @@ class FlickrSearchUITests: XCTestCase {
         #endif
 
         testTyping(delay: 0)
+    }
+    
+    func testTypingPerformance() {
+        measure {
+            testTyping(delay: 0, times: 1)
+        }
     }
     
     func testTypingWithSmallDelay() {
