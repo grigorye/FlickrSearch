@@ -48,7 +48,7 @@ enum FlickrSearchError: Swift.Error {
 
 extension URLSession {
     
-    func dataTaskForFlickrSearch(apiKey: String, text: String, date: Date, page: Int = 1, completion: @escaping (() throws -> FlickrPhotosSearchResult) -> Void) -> URLSessionDataTask {
+    func dataTaskForFlickrSearch(apiKey: String, text: String, date: Date, page: Int = 1, completion: @escaping (@escaping () throws -> FlickrPhotosSearchResult) -> Void) -> URLSessionDataTask {
         let percentEscapedText = text.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
         let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&format=json&nojsoncallback=1&safe_search=1&page=\(page)&text=\(percentEscapedText)")!
         
@@ -67,8 +67,10 @@ extension URLSession {
                 guard httpURLResponse.statusCode == 200 else {
                     throw x$(E.badHTTPResponseStatus(httpURLResponse, body: OptionallyDecodedString(data)))
                 }
+                #if false
                 let json = try JSONSerialization.jsonObject(with: data)
                 _ = x$(json)
+                #endif
                 let stat = try JSONDecoder().decode(FlickrStat.self, from: data)
                 let result: FlickrPhotosSearchResult = try {
                     do {
