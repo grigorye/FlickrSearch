@@ -39,7 +39,7 @@ func dispatch<Input>(_ dispatchInput: () throws -> Input, `catch`: (Error) -> Vo
     }
 }
 
-func dispatch<Result>(_ completion: @escaping (() throws -> Result) -> Void, try block: ((Result) -> Void) throws -> Void) {
+func dispatch<Result>(_ completion: @escaping (@escaping () throws -> Result) -> Void, try block: ((Result) -> Void) throws -> Void) {
     do {
         try block({ result in
             completion({ return result })
