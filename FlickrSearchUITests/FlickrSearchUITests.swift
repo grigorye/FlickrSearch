@@ -28,23 +28,45 @@ class FlickrSearchUITests: XCTestCase {
         super.tearDown()
     }
     
-    func typeForthAndBack(text: String) {
+    func typeForthAndBack(text: String, delay: TimeInterval) {
         let searchField = XCUIApplication().searchFields["Search"]
         searchField.tap()
         
         for c in text {
             searchField.typeText("\(c)")
-            Thread.sleep(forTimeInterval: 0.1)
+            Thread.sleep(forTimeInterval: delay)
         }
         for _ in (0..<text.count) {
             searchField.typeText("" + XCUIKeyboardKey.delete.rawValue)
-            Thread.sleep(forTimeInterval: 0.1)
+            Thread.sleep(forTimeInterval: delay)
         }
     }
     
-    func testTyping() {
+    func testTyping(delay: TimeInterval) {
         for _ in 0..<10 {
-            typeForthAndBack(text: "Kitten")
+            typeForthAndBack(text: "Kittens", delay: delay)
         }
+    }
+    
+    func testTypingWithNoDelay() {
+        #if false
+        // Workaround for typeText sometimes failing to wait for KeyEventComplete in Simulator
+        let oldContinueAfterFailure = continueAfterFailure
+        defer { continueAfterFailure = oldContinueAfterFailure }
+        #endif
+
+        testTyping(delay: 0)
+    }
+    
+    func testTypingWithSmallDelay() {
+        testTyping(delay: 0.1)
+    }
+    
+    func testTypingWithMediumDelay() {
+        testTyping(delay: 0.2)
+    }
+    
+    func testTypingWithLongEnoughDelay() {
+        testTyping(delay: 0.5)
     }
 }
