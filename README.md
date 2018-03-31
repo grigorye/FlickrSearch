@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/grigorye/FlickrSearch/badges/master/pipeline.svg)](https://gitlab.com/grigorye/FlickrSearch/commits/master)
+[![](https://gitlab.com/grigorye/FlickrSearch/badges/master/pipeline.svg)](https://gitlab.com/grigorye/FlickrSearch/commits/master)
 
 
 # FlickrSearch
