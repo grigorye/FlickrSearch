@@ -57,29 +57,40 @@ class MasterViewController: UICollectionViewController, FlickrSearchResultsUpdat
 
     // MARK: -
     
+    var batchUpdatesFinished = true
     func addMorePhotos(_ morePhotos: [Photo]) {
         let collectionView = self.collectionView!
-        let oldPhotosCount = photos.count
+        let oldPhotosCount = x$(photos.count)
         photos += morePhotos
-        collectionView.performBatchUpdates({
-            let indexPaths = (oldPhotosCount..<photos.count).map { IndexPath(item: $0, section: 0) }
-            collectionView.insertItems(at: indexPaths)
-        }, completion: { (finished) in
-            _ = x$(finished)
-        })
+        let indexPaths = (oldPhotosCount..<photos.count).map { IndexPath(item: $0, section: 0) }
+        batchUpdatesFinished = false
+        if oldPhotosCount == 0 { // http://openradar.appspot.com/12954582
+            collectionView.reloadData()
+        } else {
+            assert(batchUpdatesFinished)
+            collectionView.performBatchUpdates({
+                collectionView.insertItems(at: indexPaths)
+            }, completion: { (finished) in
+                _ = x$(finished)
+                assert(finished)
+                self.batchUpdatesFinished = true
+            })
+        }
     }
     
     // MARK: - Flickr search results updater delegate
     
     func flickrSearchResultsUpdaterDidResetSearch(_ updater: FlickrSearchResultsUpdater) {
+        let text = updater.search.text
+        _ = x$(text)
         photos = []
         collectionView?.reloadData()
     }
     
     func flickrSearchResultsUpdater(_ updater: FlickrSearchResultsUpdater, didLoadMorePhotos morePhotos: [Photo]) {
-        DispatchQueue.main.async {
-            self.addMorePhotos(morePhotos)
-        }
+        let text = updater.search.text
+        _ = x$(text)
+        self.addMorePhotos(morePhotos)
     }
 
     // MARK: - Collection View
@@ -89,7 +100,7 @@ class MasterViewController: UICollectionViewController, FlickrSearchResultsUpdat
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return x$(photos.count)
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
