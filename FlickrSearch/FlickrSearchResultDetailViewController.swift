@@ -15,9 +15,9 @@ class FlickrSearchResultDetailViewController: UIViewController {
 
     func configureView() {
         // Update the user interface for the detail item.
-        if let detail = detailItem {
+        if let photo = photo {
             if let label = detailDescriptionLabel {
-                label.text = detail.timestamp!.description
+                label.text = photo.id
             }
         }
     }
@@ -33,7 +33,7 @@ class FlickrSearchResultDetailViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    var detailItem: Event? {
+    var photo: Photo? {
         didSet {
             // Update the view.
             configureView()
