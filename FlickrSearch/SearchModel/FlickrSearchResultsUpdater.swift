@@ -18,16 +18,19 @@ protocol FlickrSearchResultsUpdaterDelegate : class {
 class FlickrSearchResultsUpdater {
     
     var search: FlickrSearch!
+    var page: Int!
     
     weak var delegate: FlickrSearchResultsUpdaterDelegate!
     
     // MARK: - FlickrSearchResultsUpdaterDelegate
     
     private func didLoadMorePhotos(_ photos: [Photo]) {
+        page = page + 1
         delegate.flickrSearchResultsUpdater(self, didLoadMorePhotos: photos)
     }
     
     private func didResetSearch() {
+        page = 1
         delegate.flickrSearchResultsUpdaterDidResetSearch(self)
     }
 
@@ -44,22 +47,32 @@ class FlickrSearchResultsUpdater {
             // Flickr doesn't support search with no text.
             return
         }
-
-        search.loadMore { [oldSearch = search] (throwingResult) in
+        
+        loadMore()
+    }
+    
+    private(set) var loading = false
+    
+    func loadMore() {
+        let search = self.search!
+        loading = true
+        search.loadMore(page: page) { [oldSearch = search] (throwingResult) in
             DispatchQueue.main.async {
                 guard x$(oldSearch === self.search) else {
                     // Ignore no longer actual completion.
                     _ = x$(oldSearch.text)
                     return
                 }
+                assert(self.loading)
+                self.loading = false
                 dispatch(throwingResult, catch: { error in
                     _ = x$(error)
                     _ = x$((error as NSError).userInfo)
-                }, or: { [weak self] in
+                }, or: {
                     _ = x$($0)
                     //http://farm{farm}.static.flickr.com/{server}/{id}_{secret}.jpg
                     let photos = $0.photos.photo
-                    self?.didLoadMorePhotos(photos)
+                    self.didLoadMorePhotos(photos)
                 })
             }
         }
