@@ -12,6 +12,7 @@ typealias Photo = FlickrPhotosSearchResult.Photos.Photo
 
 private let cellReuseIdentifier = "FlickrSearchResultItemCell"
 private let cellNibName = "FlickrSearchResultItemCell"
+private let showDetailSegueIdentifier = "showDetail"
 
 class FlickrSearchResultsViewController: UICollectionViewController, FlickrSearchResultsUpdaterDelegate {
 
@@ -20,8 +21,6 @@ class FlickrSearchResultsViewController: UICollectionViewController, FlickrSearc
     }
     private var photos = [Photo]()
     
-    var detailViewController: FlickrSearchResultDetailViewController? = nil
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,31 +28,26 @@ class FlickrSearchResultsViewController: UICollectionViewController, FlickrSearc
 
         collectionView.register(UINib(nibName: cellNibName, bundle: nil), forCellWithReuseIdentifier: cellReuseIdentifier)
 
-        if let split = splitViewController {
-            let controllers = split.viewControllers
-            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? FlickrSearchResultDetailViewController
+        let searchBar = UISearchBar() … {
+            $0.delegate = self.searchResultsUpdater
+            $0.sizeToFit()
         }
+        navigationItem.titleView = searchBar
+        searchBar.becomeFirstResponder()
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        //clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
-        super.viewWillAppear(animated)
-    }
-
+    
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showDetail" {
+        if segue.identifier == showDetailSegueIdentifier {
             if let indexPath = collectionView?.indexPathsForSelectedItems?.last {
                 assert(indexPath.section == 0)
-                let object = photos[indexPath.row]
-                _ = x$(object)
-                #if false
+                let photo = photos[indexPath.row]
+                _ = x$(photo)
                 let controller = (segue.destination as! UINavigationController).topViewController as! FlickrSearchResultDetailViewController
-                controller.detailItem = object
+                controller.photo = photo
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
-                #endif
             }
         }
     }
@@ -98,6 +92,10 @@ class FlickrSearchResultsViewController: UICollectionViewController, FlickrSearc
 
     // MARK: - Collection View
 
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        performSegue(withIdentifier: showDetailSegueIdentifier, sender: self)
+    }
+    
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -122,7 +120,6 @@ class FlickrSearchResultsViewController: UICollectionViewController, FlickrSearc
 }
 
 extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout {
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
         let numberOfColumns = 3
