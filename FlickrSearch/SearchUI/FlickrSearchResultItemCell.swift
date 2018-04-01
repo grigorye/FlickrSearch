@@ -7,6 +7,8 @@
 //
 
 import UIKit.UICollectionViewCell
+import UIKit.UIImageView
+import UIKit.UILabel
 
 class FlickrSearchResultItemCell : UICollectionViewCell {
     
