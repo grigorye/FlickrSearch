@@ -10,20 +10,25 @@ import UIKit
 
 private let showDetailSegueIdentifier = "showDetail"
 
-class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate {
+class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadOnScrollTriggerDelegate {
 
-    lazy var collectionViewDataUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
+    lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
     
     lazy var searchResultsUpdater = FlickrSearchResultsUpdater() … {
         $0.delegate = searchResultsController
     }
-    lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewDataUpdater)
+    lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
     lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
+    
+    lazy var collectionViewOnLoadOnScrollTrigger = CollectionViewLoadMoreOnScrollTrigger(delegate: self, numberOfScrollableItemsForTrigger: 50)
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionViewDataSource.prepareCollectionView(self.collectionView!)
+        let collectionView = self.collectionView!
+        
+        collectionViewDataSource.prepareCollectionView(collectionView)
+        collectionViewOnLoadOnScrollTrigger.prepareCollectionView(collectionView)
 
         let searchBar = UISearchBar() … {
             $0.delegate = self
@@ -60,6 +65,15 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchResultsUpdater.updateSearchResults(for: searchText)
+    }
+    
+    // MARK: - CollectionViewLoadOnScrollTriggerDelegate
+    
+    func triggerLoadMoreOnScroll(_ trigger: CollectionViewLoadMoreOnScrollTrigger, for collectionView: UICollectionView) {
+        assert(collectionView == self.collectionView)
+        if !searchResultsUpdater.loading {
+            searchResultsUpdater.loadMore()
+        }
     }
 }
 
