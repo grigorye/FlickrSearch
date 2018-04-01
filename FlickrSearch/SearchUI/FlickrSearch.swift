@@ -6,7 +6,8 @@
 //  Copyright © 2018 Grigory Entin. All rights reserved.
 //
 
-import Foundation
+import Foundation.NSURLSession
+import Foundation.NSDate
 
 private let session: URLSession = URLSession(configuration: .default)
 
