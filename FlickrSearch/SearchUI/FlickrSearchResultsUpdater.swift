@@ -13,11 +13,13 @@ protocol FlickrSearchResultsUpdaterDelegate : class {
     func flickrSearchResultsUpdater(_ updater: FlickrSearchResultsUpdater, didLoadMorePhotos morePhotos: [Photo])
 }
 
-class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
+class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating, UISearchBarDelegate {
     
     var search: FlickrSearch!
     
     weak var delegate: FlickrSearchResultsUpdaterDelegate!
+    
+    // MARK: - FlickrSearchResultsUpdaterDelegate
     
     private func didLoadMorePhotos(_ photos: [Photo]) {
         delegate.flickrSearchResultsUpdater(self, didLoadMorePhotos: photos)
@@ -27,19 +29,32 @@ class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating {
         delegate.flickrSearchResultsUpdaterDidResetSearch(self)
     }
 
+    // MARK: - UISearchControllerDelegate
+    
     func updateSearchResults(for searchController: UISearchController) {
-        let text = searchController.searchBar.text!
-        
-        guard text != "" else {
-            // Flickr doesn't support search with no text.
-            return
-        }
-        
+        updateSearchResults(for: searchController.searchBar.text!)
+    }
+    
+    // MARK: - UISearchBarDelegate
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        updateSearchResults(for: searchText)
+    }
+    
+    // MARK: -
+    
+    func updateSearchResults(for text: String) {
+
         let search = FlickrSearch(text: x$(text), date: Date())
         self.search = search
         
         didResetSearch()
-        
+
+        guard text.trimmingCharacters(in: CharacterSet.whitespaces) != "" else {
+            // Flickr doesn't support search with no text.
+            return
+        }
+
         search.loadMore { [oldSearch = search] (throwingResult) in
             DispatchQueue.main.async {
                 guard x$(oldSearch === self.search) else {
