@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -23,9 +27,9 @@
                             <constraint firstAttribute="width" secondItem="POu-Y0-uuU" secondAttribute="height" multiplier="1:1" id="h9Z-iN-8aS"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SMk-GD-ZiG">
-                        <rect key="frame" x="61.5" y="165" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SMk-GD-ZiG">
+                        <rect key="frame" x="0.0" y="165" width="165" height="21"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -34,7 +38,9 @@
             <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="SMk-GD-ZiG" firstAttribute="centerX" secondItem="POu-Y0-uuU" secondAttribute="centerX" id="A7k-vS-SCC"/>
+                <constraint firstAttribute="trailing" secondItem="SMk-GD-ZiG" secondAttribute="trailing" id="DqB-hp-Fkr"/>
                 <constraint firstItem="POu-Y0-uuU" firstAttribute="top" secondItem="RpO-5W-5BD" secondAttribute="top" id="Sp7-Xc-PXn"/>
+                <constraint firstItem="SMk-GD-ZiG" firstAttribute="leading" secondItem="RpO-5W-5BD" secondAttribute="leading" id="TVV-uR-piy"/>
                 <constraint firstItem="SMk-GD-ZiG" firstAttribute="top" secondItem="POu-Y0-uuU" secondAttribute="bottom" id="d0H-xE-EPi"/>
                 <constraint firstItem="POu-Y0-uuU" firstAttribute="leading" secondItem="RpO-5W-5BD" secondAttribute="leading" id="ln2-Eb-K90"/>
                 <constraint firstAttribute="bottom" secondItem="SMk-GD-ZiG" secondAttribute="bottom" id="rf4-78-qSP"/>
