@@ -1,19 +1,21 @@
 //
-//  SearchResultsUpdater.swift
+//  FlickrSearchResultsUpdater.swift
 //  FlickrSearch
 //
 //  Created by Grigory Entin on 28/03/2018.
 //  Copyright © 2018 Grigory Entin. All rights reserved.
 //
 
-import UIKit
+import Foundation.NSDate
 
 protocol FlickrSearchResultsUpdaterDelegate : class {
+    
     func flickrSearchResultsUpdaterDidResetSearch(_ updater: FlickrSearchResultsUpdater)
+    
     func flickrSearchResultsUpdater(_ updater: FlickrSearchResultsUpdater, didLoadMorePhotos morePhotos: [Photo])
 }
 
-class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating, UISearchBarDelegate {
+class FlickrSearchResultsUpdater {
     
     var search: FlickrSearch!
     
@@ -29,18 +31,6 @@ class FlickrSearchResultsUpdater : NSObject, UISearchResultsUpdating, UISearchBa
         delegate.flickrSearchResultsUpdaterDidResetSearch(self)
     }
 
-    // MARK: - UISearchControllerDelegate
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        updateSearchResults(for: searchController.searchBar.text!)
-    }
-    
-    // MARK: - UISearchBarDelegate
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        updateSearchResults(for: searchText)
-    }
-    
     // MARK: -
     
     func updateSearchResults(for text: String) {
