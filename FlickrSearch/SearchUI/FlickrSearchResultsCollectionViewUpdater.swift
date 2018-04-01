@@ -7,7 +7,8 @@
 //
 
 import UIKit.UICollectionView
-import Foundation
+import Foundation.NSIndexPath
+import Foundation.NSObject
 
 class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsControllerDelegate {
     
