@@ -12,7 +12,6 @@ class FlickrSearchResultDetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
 
-
     func configureView() {
         // Update the user interface for the detail item.
         if let photo = photo {
@@ -39,7 +38,4 @@ class FlickrSearchResultDetailViewController: UIViewController {
             configureView()
         }
     }
-
-
 }
-
