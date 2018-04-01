@@ -8,8 +8,6 @@
 
 import UIKit
 
-typealias Photo = FlickrPhotosSearchResult.Photos.Photo
-
 private let showDetailSegueIdentifier = "showDetail"
 
 class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate {

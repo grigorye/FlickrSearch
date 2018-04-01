@@ -9,10 +9,6 @@
 import UIKit.UICollectionView
 import Foundation
 
-protocol PhotosDataSource {
-    var photos: [Photo] { get }
-}
-
 class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsControllerDelegate {
     
     init(collectionView: UICollectionView) {
