@@ -25,11 +25,11 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
     private var batchUpdatesFinished = true
 
     func searchResultsController(_ controller: FlickrSearchResultsController, didLoadMorePhotosAt indexPaths: [IndexPath]) {
-        batchUpdatesFinished = false
+        assert(batchUpdatesFinished)
         if (controller.photos.count - indexPaths.count) == 0 { // http://openradar.appspot.com/12954582
             collectionView.reloadData()
         } else {
-            assert(batchUpdatesFinished)
+            batchUpdatesFinished = false
             collectionView.performBatchUpdates({
                 collectionView.insertItems(at: indexPaths)
             }, completion: { (finished) in
