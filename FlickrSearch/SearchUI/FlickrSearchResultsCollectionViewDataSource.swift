@@ -28,7 +28,7 @@ class FlickrSearchResultsCollectionViewDataSource : NSObject, UICollectionViewDa
     
     func configureCell(_ cell: UICollectionViewCell, withPhoto photo: Photo) {
         (cell as! FlickrSearchResultItemCell) … {
-            $0.textLabel.text = photo.id
+            $0.textLabel.text = photo.title
         }
     }
 
