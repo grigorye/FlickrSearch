@@ -7,6 +7,8 @@
 //
 
 import UIKit.UICollectionView
+import UIKit.UICollectionViewCell
+import Foundation.NSObject
 
 private let cellReuseIdentifier = "FlickrSearchResultItemCell"
 private let cellNibName = "FlickrSearchResultItemCell"
