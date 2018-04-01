@@ -33,6 +33,7 @@ struct FlickrPhotosSearchResult : Decodable {
             var owner: String
             var secret: String
             var server: String
+            var title: String
         }
     }
 }
