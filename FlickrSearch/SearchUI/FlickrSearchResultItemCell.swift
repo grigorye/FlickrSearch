@@ -25,12 +25,11 @@ class FlickrSearchResultItemCell : UICollectionViewCell {
         didSet {
             textLabel.text = photo.title
             var dataTask: URLSessionDataTask!
-            dataTask = session.dataTask(with: photo.url) { (data, response, error) in
-                guard dataTask! === self.dataTask else {
-                    assert((error as? URLError)?.code == .cancelled)
-                    return
-                }
+            dataTask = session.dataTask(with: photo.largeSquareURL) { (data, response, error) in
                 DispatchQueue.main.async {
+                    guard dataTask! === self.dataTask else {
+                        return
+                    }
                     self.completePhotoLoad(x$(data), x$(response), x$(error))
                 }
             }
@@ -44,7 +43,19 @@ class FlickrSearchResultItemCell : UICollectionViewCell {
     }
     
     private func completePhotoLoad(_ data: Data?, _ response: URLResponse?, _ error: Error?) {
-        setImageView(imageView, from: data, response, error)
+        if UserDefaults.standard.bool(forKey: "decompressThumbnailsInBackground") {
+            DispatchQueue.global().async { [dataTask = self.dataTask!] in
+                let image = UIImage.image(forData: data, response, error)
+                DispatchQueue.main.async {
+                    guard dataTask === self.dataTask else {
+                        return
+                    }
+                    self.imageView.image = image
+                }
+            }
+        } else {
+            setImageView(imageView, from: data, response, error)
+        }
     }
     
     // MARK: -
