@@ -49,47 +49,48 @@ enum FlickrSearchError: Swift.Error {
 
 extension URLSession {
     
-    func dataTaskForFlickrSearch(apiKey: String, text: String, date: Date, page: Int = 1, completion: @escaping (@escaping () throws -> FlickrPhotosSearchResult) -> Void) -> URLSessionDataTask {
+    func completeDataTaskForFlickrSearch(_ data: Data?, _ response: URLResponse?, _ error: Error?) throws -> FlickrPhotosSearchResult {
+        typealias E = FlickrSearchError
+        if let error = error {
+            throw x$(error)
+        }
+        guard let data = data else {
+            throw x$(E.noData)
+        }
+        guard let httpURLResponse = response as? HTTPURLResponse else {
+            throw x$(E.badResponse(response))
+        }
+        guard httpURLResponse.statusCode == 200 else {
+            throw x$(E.badHTTPResponseStatus(httpURLResponse, body: OptionallyDecodedString(data)))
+        }
+        #if false
+        let json = try JSONSerialization.jsonObject(with: data)
+        _ = x$(json)
+        #endif
+        let stat = try JSONDecoder().decode(FlickrStat.self, from: data)
+        do {
+            switch stat.stat {
+            case "ok":
+                return try JSONDecoder().decode(FlickrPhotosSearchResult.self, from: data)
+            case "fail":
+                let fail = try JSONDecoder().decode(FlickrFail.self, from: data)
+                throw E.flickrFail(fail)
+            case let badStat:
+                throw E.badFlickrStat(badStat, body: OptionallyDecodedString(data))
+            }
+        } catch let e as DecodingError {
+            throw E.decodingError(e, body: OptionallyDecodedString(data))
+        }
+    }
+    
+    func dataTaskForFlickrSearch(apiKey: String, text: String, date: Date, page: Int = 1, completion: @escaping (ValueOrError<FlickrPhotosSearchResult>) -> Void) -> URLSessionDataTask {
         let percentEscapedText = text.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
         let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&format=json&nojsoncallback=1&safe_search=1&page=\(page)&text=\(percentEscapedText)")!
         
         let task = dataTask(with: x$(url)) { (data, response, error) in
-            dispatch(completion) {
-                typealias E = FlickrSearchError
-                if let error = error {
-                    throw x$(error)
-                }
-                guard let data = data else {
-                    throw x$(E.noData)
-                }
-                guard let httpURLResponse = response as? HTTPURLResponse else {
-                    throw x$(E.badResponse(response))
-                }
-                guard httpURLResponse.statusCode == 200 else {
-                    throw x$(E.badHTTPResponseStatus(httpURLResponse, body: OptionallyDecodedString(data)))
-                }
-                #if false
-                let json = try JSONSerialization.jsonObject(with: data)
-                _ = x$(json)
-                #endif
-                let stat = try JSONDecoder().decode(FlickrStat.self, from: data)
-                let result: FlickrPhotosSearchResult = try {
-                    do {
-                        switch stat.stat {
-                        case "ok":
-                            return try JSONDecoder().decode(FlickrPhotosSearchResult.self, from: data)
-                        case "fail":
-                            let fail = try JSONDecoder().decode(FlickrFail.self, from: data)
-                            throw E.flickrFail(fail)
-                        case let badStat:
-                            throw E.badFlickrStat(badStat, body: OptionallyDecodedString(data))
-                        }
-                    } catch let e as DecodingError {
-                        throw E.decodingError(e, body: OptionallyDecodedString(data))
-                    }
-                }()
-                x$($0(result))
-            }
+            completion(ValueOrError {
+                try self.completeDataTaskForFlickrSearch(data, response, error)
+            })
         }
         return task
     }

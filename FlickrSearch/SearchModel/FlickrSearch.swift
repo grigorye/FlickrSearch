@@ -16,7 +16,7 @@ class FlickrSearch {
     let text: String
     let date: Date
     
-    func loadMore(page: Int = 1, completion: @escaping (@escaping () throws -> FlickrPhotosSearchResult) -> Void) {
+    func loadMore(page: Int = 1, completion: @escaping (ValueOrError<FlickrPhotosSearchResult>) -> Void) {
         let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: date, page: page) {
             completion($0)
         }

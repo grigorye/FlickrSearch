@@ -49,7 +49,6 @@ class FlickrSearchResultsLoader {
     // MARK: -
     
     func updateSearchResults(for text: String) {
-
         let search = FlickrSearch(text: x$(text), date: Date())
         self.search = search
         
@@ -69,29 +68,30 @@ class FlickrSearchResultsLoader {
         assert(!loadCompleted)
         let search = self.search!
         loading = true
-        search.loadMore(page: page) { [oldSearch = search] (throwingResult) in
+        search.loadMore(page: page) { [oldSearch = search] (searchResultOrError) in
             DispatchQueue.main.async {
                 guard x$(oldSearch === self.search) else {
                     // Ignore no longer actual completion.
                     _ = x$(oldSearch.text)
                     return
                 }
+                
                 assert(self.loading)
                 self.loading = false
-                dispatch(throwingResult, catch: { error in
+                
+                guard let searchResult = searchResultOrError.value else {
+                    let error = searchResultOrError.error!
                     _ = x$(error)
                     _ = x$((error as NSError).userInfo)
-                }, or: { (searchResult) in
-                    _ = x$(searchResult)
-                    
-                    //http://farm{farm}.static.flickr.com/{server}/{id}_{secret}.jpg
-                    let photos = searchResult.photos.photo
-                    self.didLoadMorePhotos(photos)
-                    
-                    if searchResult.photos.page == searchResult.photos.pages {
-                        self.didCompleteLoad()
-                    }
-                })
+                    return
+                }
+
+                let photos = x$(searchResult).photos.photo
+                self.didLoadMorePhotos(photos)
+                
+                if searchResult.photos.page == searchResult.photos.pages {
+                    self.didCompleteLoad()
+                }
             }
         }
     }
