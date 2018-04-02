@@ -10,7 +10,7 @@ import UIKit
 
 private let showDetailSegueIdentifier = "showDetail"
 
-class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadOnScrollTriggerDelegate {
+class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadMoreTriggerDelegate {
 
     lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
     
@@ -20,7 +20,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
     lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
     
-    lazy var collectionViewOnLoadOnScrollTrigger = CollectionViewLoadMoreOnScrollTrigger(delegate: self, numberOfScrollableItemsForTrigger: 50)
+    lazy var collectionViewLoadMoreTrigger = CollectionViewLoadMoreTrigger(delegate: self, numberOfScrollableItemsForTrigger: 50)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
         let collectionView = self.collectionView!
         
         collectionViewDataSource.prepareCollectionView(collectionView)
-        collectionViewOnLoadOnScrollTrigger.prepareCollectionView(collectionView)
+        collectionViewLoadMoreTrigger.prepareCollectionView(collectionView)
 
         let searchBar = UISearchBar() … {
             $0.delegate = self
@@ -69,7 +69,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     // MARK: - CollectionViewLoadOnScrollTriggerDelegate
     
-    func triggerLoadMoreOnScroll(_ trigger: CollectionViewLoadMoreOnScrollTrigger, for collectionView: UICollectionView) {
+    func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView) {
         assert(collectionView == self.collectionView)
         if !searchResultsUpdater.loading {
             searchResultsUpdater.loadMore()

@@ -11,11 +11,11 @@ import UIKit.UICollectionView
 import Foundation.NSObject
 import ObjectiveC
 
-class CollectionViewLoadMoreOnScrollTrigger : NSObject, UIScrollViewDelegate {
+class CollectionViewLoadMoreTrigger : NSObject, UIScrollViewDelegate {
     
     let numberOfScrollableItemsForTrigger: Int
     
-    init(delegate: CollectionViewLoadOnScrollTriggerDelegate, numberOfScrollableItemsForTrigger: Int) {
+    init(delegate: CollectionViewLoadMoreTriggerDelegate, numberOfScrollableItemsForTrigger: Int) {
         self.delegate = delegate
         self.numberOfScrollableItemsForTrigger = numberOfScrollableItemsForTrigger
     }
@@ -43,8 +43,8 @@ class CollectionViewLoadMoreOnScrollTrigger : NSObject, UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
         
-        if x$(shouldLoadMore(for: collectionView)) {
-            delegate.triggerLoadMoreOnScroll(self, for: collectionView)
+        if (shouldLoadMore(for: collectionView)) {
+            delegate.triggerLoadMore(self, for: collectionView)
         }
         
         nextDelegate.scrollViewDidScroll?(scrollView)
@@ -67,12 +67,12 @@ class CollectionViewLoadMoreOnScrollTrigger : NSObject, UIScrollViewDelegate {
     // MARK: -
     
     private weak var nextDelegate: UIScrollViewDelegate!
-    private(set) weak var delegate: CollectionViewLoadOnScrollTriggerDelegate!
+    private(set) weak var delegate: CollectionViewLoadMoreTriggerDelegate!
 }
 
-protocol CollectionViewLoadOnScrollTriggerDelegate : class {
+protocol CollectionViewLoadMoreTriggerDelegate : class {
     
-    func triggerLoadMoreOnScroll(_ trigger: CollectionViewLoadMoreOnScrollTrigger, for collectionView: UICollectionView)
+    func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView)
 }
 
 private class NoNextScrollViewDelegate : NSObject, UIScrollViewDelegate {}
