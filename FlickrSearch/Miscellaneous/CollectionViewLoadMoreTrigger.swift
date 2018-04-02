@@ -25,6 +25,12 @@ class CollectionViewLoadMoreTrigger : NSObject, UIScrollViewDelegate {
         (collectionView as UIScrollView).delegate = self
     }
     
+    func triggerLoadMoreIfNecessary(for collectionView: UICollectionView) {
+        if (shouldLoadMore(for: collectionView)) {
+            delegate.triggerLoadMore(self, for: collectionView)
+        }
+    }
+    
     // MARK: -
     
     func shouldLoadMore(for collectionView: UICollectionView) -> Bool {
@@ -43,9 +49,7 @@ class CollectionViewLoadMoreTrigger : NSObject, UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
         
-        if (shouldLoadMore(for: collectionView)) {
-            delegate.triggerLoadMore(self, for: collectionView)
-        }
+        triggerLoadMoreIfNecessary(for: collectionView)
         
         nextDelegate.scrollViewDidScroll?(scrollView)
     }
