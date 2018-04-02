@@ -9,7 +9,7 @@
 import UIKit.UIImageView
 
 extension UIImage {
-    fileprivate class func image(forData data: Data?, _ response: URLResponse?, _ error: Error?) -> UIImage? {
+    class func image(forData data: Data?, _ response: URLResponse?, _ error: Error?) -> UIImage? {
         if let error = error {
             _ = x$(error)
             return nil
@@ -26,7 +26,7 @@ extension UIImage {
             _ = x$(Data?.none)
             return nil
         }
-        return UIImage(data: data)
+        return UIImage(data: data)!
     }
 }
 
