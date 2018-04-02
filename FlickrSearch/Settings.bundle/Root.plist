@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StringsTable</key>
+	<string>Root</string>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Titles</key>
+			<array>
+				<string>3</string>
+				<string>5</string>
+				<string>20</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>3</integer>
+				<integer>5</integer>
+				<integer>20</integer>
+			</array>
+			<key>Key</key>
+			<string>numberOfColumnsInSearchResults</string>
+			<key>DefaultValue</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Amount of Preload for Search Results</string>
+			<key>Key</key>
+			<string>heightToBeScrolledForLoadMore</string>
+			<key>DefaultValue</key>
+			<integer>2000</integer>
+			<key>Titles</key>
+			<array>
+				<string>Tiny</string>
+				<string>Small</string>
+				<string>Medium</string>
+				<string>Large</string>
+				<string>Huge</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>10</integer>
+				<integer>200</integer>
+				<integer>500</integer>
+				<integer>2000</integer>
+				<integer>10000</integer>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
