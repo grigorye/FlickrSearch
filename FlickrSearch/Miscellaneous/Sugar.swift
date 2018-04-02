@@ -19,6 +19,14 @@ func …<T>(_ v: T, block: (inout T) throws -> Void) rethrows -> T {
     return mutableV
 }
 
+#if true
+
+func x$<T>(_ v: T) -> T {
+    return v
+}
+
+#else
+
 private func xx$<T>(_ v: T) -> String {
     var s = ""
     debugPrint(v, to: &s)
@@ -38,5 +46,7 @@ func x$<T>(_ v: T, function: String = #function, file: String = #file, line: Int
     printDumped("\(type(of: v))", xx$(v), function: function, file: file, line: line)
     return v
 }
+
+#endif
 
 #endif
