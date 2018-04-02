@@ -32,6 +32,10 @@ class FlickrSearchResultsController : FlickrSearchResultsLoaderDelegate, PhotosD
         let indexPaths = (oldPhotosCount..<photos.count).map { IndexPath(item: $0, section: 0) }
         delegate.searchResultsController(self, didLoadMorePhotosAt: indexPaths)
     }
+    
+    func flickrSearchResultsLoaderDidCompleteLoad(_ loader: FlickrSearchResultsLoader) {
+        delegate.searchResultsControllerDidCompleteLoad(self)
+    }
 
     private(set) var photos = [Photo]()
     
@@ -43,4 +47,6 @@ protocol FlickrSearchResultsControllerDelegate {
     func searchResultsControllerDidResetSearch(_ controller: FlickrSearchResultsController)
     
     func searchResultsController(_ controller: FlickrSearchResultsController, didLoadMorePhotosAt indexPaths: [IndexPath])
+    
+    func searchResultsControllerDidCompleteLoad(_ controller: FlickrSearchResultsController)
 }

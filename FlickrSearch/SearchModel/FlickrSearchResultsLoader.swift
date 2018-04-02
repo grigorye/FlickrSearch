@@ -13,14 +13,21 @@ protocol FlickrSearchResultsLoaderDelegate : class {
     func flickrSearchResultsLoaderDidResetSearch(_ loader: FlickrSearchResultsLoader)
     
     func flickrSearchResultsLoader(_ loader: FlickrSearchResultsLoader, didLoadMorePhotos morePhotos: [Photo])
+    
+    func flickrSearchResultsLoaderDidCompleteLoad(_ loader: FlickrSearchResultsLoader)
 }
 
 class FlickrSearchResultsLoader {
     
-    var search: FlickrSearch!
-    var page: Int!
+    init(delegate: FlickrSearchResultsLoaderDelegate) {
+        self.delegate = delegate
+    }
     
-    weak var delegate: FlickrSearchResultsLoaderDelegate!
+    private(set) var search: FlickrSearch!
+    private(set) var loadCompleted = false
+    private(set) weak var delegate: FlickrSearchResultsLoaderDelegate!
+    
+    private var page: Int!
     
     // MARK: -
     
@@ -31,9 +38,14 @@ class FlickrSearchResultsLoader {
     
     private func didResetSearch() {
         page = 1
+        loadCompleted = false
         delegate.flickrSearchResultsLoaderDidResetSearch(self)
     }
 
+    private func didCompleteLoad() {
+        loadCompleted = true
+    }
+    
     // MARK: -
     
     func updateSearchResults(for text: String) {
@@ -54,6 +66,7 @@ class FlickrSearchResultsLoader {
     private(set) var loading = false
     
     func loadMore() {
+        assert(!loadCompleted)
         let search = self.search!
         loading = true
         search.loadMore(page: page) { [oldSearch = search] (throwingResult) in
@@ -68,11 +81,16 @@ class FlickrSearchResultsLoader {
                 dispatch(throwingResult, catch: { error in
                     _ = x$(error)
                     _ = x$((error as NSError).userInfo)
-                }, or: {
-                    _ = x$($0)
+                }, or: { (searchResult) in
+                    _ = x$(searchResult)
+                    
                     //http://farm{farm}.static.flickr.com/{server}/{id}_{secret}.jpg
-                    let photos = $0.photos.photo
+                    let photos = searchResult.photos.photo
                     self.didLoadMorePhotos(photos)
+                    
+                    if searchResult.photos.page == searchResult.photos.pages {
+                        self.didCompleteLoad()
+                    }
                 })
             }
         }

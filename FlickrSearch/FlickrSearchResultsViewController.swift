@@ -72,10 +72,8 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!, delegate: self)
     
-    private lazy var searchResultsLoader = FlickrSearchResultsLoader() … {
-        $0.delegate = searchResultsController
-    }
-    
+    private lazy var searchResultsLoader = FlickrSearchResultsLoader(delegate: searchResultsController)
+
     private lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
     
     private lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
@@ -99,6 +97,10 @@ extension FlickrSearchResultsViewController {
             return false
         }
         
+        guard !searchResultsLoader.loadCompleted else {
+            return false
+        }
+
         let collectionView = self.collectionView!
         
         let heightToBeScrolled = x$(collectionView.contentSize.height) - x$(collectionView.contentOffset.y) - x$(collectionView.bounds.height)

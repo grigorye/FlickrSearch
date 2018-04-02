@@ -42,6 +42,10 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
         }
     }
 
+    func searchResultsControllerDidCompleteLoad(_ controller: FlickrSearchResultsController) {
+        _ = x$(controller)
+    }
+    
     // MARK: -
     
     let collectionView: UICollectionView
