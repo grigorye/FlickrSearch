@@ -103,12 +103,12 @@ extension FlickrSearchResultsViewController {
 
         let collectionView = self.collectionView!
         
-        let heightToBeScrolled = x$(collectionView.contentSize.height) - x$(collectionView.contentOffset.y) - x$(collectionView.bounds.height)
+        let heightToBeScrolled = (collectionView.contentSize.height) - (collectionView.contentOffset.y) - (collectionView.bounds.height)
         
         let heightToBeScrolledForLoadMore = CGFloat(UserDefaults.standard.double(forKey: "heightToBeScrolledForLoadMore"))
         assert(0 < heightToBeScrolledForLoadMore)
         
-        guard x$(heightToBeScrolled) < heightToBeScrolledForLoadMore else {
+        guard (heightToBeScrolled) < heightToBeScrolledForLoadMore else {
             return false
         }
         
