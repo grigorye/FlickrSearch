@@ -12,8 +12,9 @@ import Foundation.NSObject
 
 class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsControllerDelegate {
     
-    init(collectionView: UICollectionView) {
+    init(collectionView: UICollectionView, delegate: FlickrSearchResultsCollectionViewUpdaterDelegate) {
         self.collectionView = collectionView
+        self.delegate = delegate
     }
 
     // MARK: - FlickrSearchResultsControllerDelegate
@@ -36,6 +37,7 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
                 _ = x$(finished)
                 assert(finished)
                 self.batchUpdatesFinished = true
+                self.delegate.flickrSearchResultsCollectionViewUpdaterDidUpdate(self)
             })
         }
     }
@@ -43,5 +45,10 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
     // MARK: -
     
     let collectionView: UICollectionView
+    weak var delegate: FlickrSearchResultsCollectionViewUpdaterDelegate!
 }
 
+protocol FlickrSearchResultsCollectionViewUpdaterDelegate : class {
+    
+    func flickrSearchResultsCollectionViewUpdaterDidUpdate(_ updater: FlickrSearchResultsCollectionViewUpdater)
+}
