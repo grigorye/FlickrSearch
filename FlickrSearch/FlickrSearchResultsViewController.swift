@@ -10,7 +10,7 @@ import UIKit
 
 private let showDetailSegueIdentifier = "showDetail"
 
-class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadMoreTriggerDelegate {
+class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadMoreTriggerDelegate, FlickrSearchResultsCollectionViewUpdaterDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +57,12 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
         searchResultsLoader.updateSearchResults(for: searchText)
     }
     
+    // MARK: - FlickrSearchResultsCollectionViewUpdaterDelegate
+    
+    func flickrSearchResultsCollectionViewUpdaterDidUpdate(_ updater: FlickrSearchResultsCollectionViewUpdater) {
+        collectionViewLoadMoreTrigger.triggerLoadMoreIfNecessary(for: collectionView!)
+    }
+    
     // MARK: - CollectionViewLoadOnScrollTriggerDelegate
     
     func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView) {
@@ -68,7 +74,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     // MARK: -
     
-    private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
+    private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!, delegate: self)
     
     private lazy var searchResultsLoader = FlickrSearchResultsLoader() … {
         $0.delegate = searchResultsController
