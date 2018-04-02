@@ -9,6 +9,8 @@
 		<dict>
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Number of Columns</string>
 			<key>Titles</key>
 			<array>
 				<string>3</string>
@@ -30,7 +32,7 @@
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>Amount of Preload for Search Results</string>
+			<string>Amount of Preload</string>
 			<key>Key</key>
 			<string>heightToBeScrolledForLoadMore</string>
 			<key>DefaultValue</key>
