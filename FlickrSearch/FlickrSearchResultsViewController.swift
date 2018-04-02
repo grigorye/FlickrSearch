@@ -12,8 +12,6 @@ private let showDetailSegueIdentifier = "showDetail"
 
 class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadMoreTriggerDelegate {
 
-    // MARK: -
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -70,17 +68,17 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     // MARK: -
     
-    lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
+    private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
     
-    lazy var searchResultsUpdater = FlickrSearchResultsUpdater() … {
+    private lazy var searchResultsUpdater = FlickrSearchResultsUpdater() … {
         $0.delegate = searchResultsController
     }
     
-    lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
+    private lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
     
-    lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
+    private lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
     
-    lazy var collectionViewLoadMoreTrigger = CollectionViewLoadMoreTrigger(delegate: self, numberOfScrollableItemsForTrigger: 50)
+    private lazy var collectionViewLoadMoreTrigger = CollectionViewLoadMoreTrigger(delegate: self, numberOfScrollableItemsForTrigger: 50)
 }
 
 extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout {
