@@ -23,8 +23,8 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
                 return
             }
             XCTAssert(0 < searchResult.photos.photo.count)
-            x$(searchResult.photos.total)
-            x$(searchResult.photos.photo.last)
+            _ = x$(searchResult.photos.total)
+            _ = x$(searchResult.photos.photo.last)
         }
         task.resume()
         waitForExpectations(timeout: 2)
