@@ -10,7 +10,7 @@ import UIKit
 
 private let showDetailSegueIdentifier = "showDetail"
 
-class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, CollectionViewLoadMoreTriggerDelegate, FlickrSearchResultsCollectionViewUpdaterDelegate {
+class FlickrSearchResultsViewController: UICollectionViewController, UISearchBarDelegate, FlickrSearchResultsCollectionViewUpdaterDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,8 +18,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
         let collectionView = self.collectionView!
         
         collectionViewDataSource.prepareCollectionView(collectionView)
-        collectionViewLoadMoreTrigger.prepareCollectionView(collectionView)
-
+        
         let searchBar = UISearchBar() … {
             $0.delegate = self
             $0.placeholder = NSLocalizedString("Search", comment: "")
@@ -60,41 +59,15 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     // MARK: - FlickrSearchResultsCollectionViewUpdaterDelegate
     
     func flickrSearchResultsCollectionViewUpdaterDidUpdate(_ updater: FlickrSearchResultsCollectionViewUpdater) {
-        collectionViewLoadMoreTrigger.triggerLoadMoreIfNecessary(for: collectionView!)
+        triggerLoadMoreIfNecessary()
     }
     
-    // MARK: - CollectionViewLoadMoreTriggerDelegate
+    // MARK: - UIScrollViewDelegate
     
-    func shouldLoadMoreFor(_ trigger: CollectionViewLoadMoreTrigger) -> Bool {
-        guard nil != searchResultsLoader.search else {
-            return false
-        }
-        
-        guard !searchResultsLoader.loading else {
-            return false
-        }
-        
-        let collectionView = self.collectionView!
-        
-        let heightToBeScrolled = x$(collectionView.contentSize.height) - x$(collectionView.contentOffset.y) - x$(collectionView.bounds.height)
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        triggerLoadMoreIfNecessary()
+    }
 
-        let heightToBeScrolledForLoadMore = CGFloat(UserDefaults.standard.double(forKey: "heightToBeScrolledForLoadMore"))
-        assert(0 < heightToBeScrolledForLoadMore)
-        
-        guard x$(heightToBeScrolled) < heightToBeScrolledForLoadMore else {
-            return false
-        }
-        
-        return true
-    }
-    
-    func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView) {
-        assert(collectionView == self.collectionView)
-        if !searchResultsLoader.loading {
-            searchResultsLoader.loadMore()
-        }
-    }
-    
     // MARK: -
     
     private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!, delegate: self)
@@ -106,8 +79,45 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     private lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
     
     private lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
+}
+
+// MARK: - LoadMore
+
+extension FlickrSearchResultsViewController {
+    func triggerLoadMoreIfNecessary() {
+        if shouldLoadMore() {
+            triggerLoadMore()
+        }
+    }
     
-    private lazy var collectionViewLoadMoreTrigger = CollectionViewLoadMoreTrigger(delegate: self)
+    private func shouldLoadMore() -> Bool {
+        guard nil != searchResultsLoader.search else {
+            return false
+        }
+        
+        guard !searchResultsLoader.loading else {
+            return false
+        }
+        
+        let collectionView = self.collectionView!
+        
+        let heightToBeScrolled = x$(collectionView.contentSize.height) - x$(collectionView.contentOffset.y) - x$(collectionView.bounds.height)
+        
+        let heightToBeScrolledForLoadMore = CGFloat(UserDefaults.standard.double(forKey: "heightToBeScrolledForLoadMore"))
+        assert(0 < heightToBeScrolledForLoadMore)
+        
+        guard x$(heightToBeScrolled) < heightToBeScrolledForLoadMore else {
+            return false
+        }
+        
+        return true
+    }
+    
+    private func triggerLoadMore() {
+        if !searchResultsLoader.loading {
+            searchResultsLoader.loadMore()
+        }
+    }
 }
 
 extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout {
