@@ -16,16 +16,15 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
     func test(with text: String, page: Int = 1) {
         let session = URLSession(configuration: .default)
         let taskCompleted = expectation(description: "Task completed")
-        let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: Date(), page: page) {
-            dispatch($0, catch: { error in
-                XCTFail("\(error)")
-                taskCompleted.fulfill()
-            }, or: {
-                XCTAssert(0 < $0.photos.photo.count)
-                _ = x$($0.photos.total)
-                _ = x$($0.photos.photo.last)
-                taskCompleted.fulfill()
-            })
+        let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: Date(), page: page) { (searchResultOrError) in
+            defer { taskCompleted.fulfill() }
+            guard let searchResult = searchResultOrError.value else {
+                XCTFail("\(searchResultOrError.error!)")
+                return
+            }
+            XCTAssert(0 < searchResult.photos.photo.count)
+            x$(searchResult.photos.total)
+            x$(searchResult.photos.photo.last)
         }
         task.resume()
         waitForExpectations(timeout: 2)
@@ -48,14 +47,13 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
     func test(with text: String, expectedErrorHandler: @escaping (Error) -> Void) {
         let session = URLSession(configuration: .default)
         let taskCompleted = expectation(description: "Task completed")
-        let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: Date()) {
-            dispatch($0, catch: { error in
-                expectedErrorHandler(error)
-                taskCompleted.fulfill()
-            }, or: {
-                XCTFail("\($0)")
-                taskCompleted.fulfill()
-            })
+        let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: Date()) { (searchResultOrError) in
+            defer { taskCompleted.fulfill() }
+            guard let error = searchResultOrError.error else {
+                XCTFail("\(searchResultOrError.value!)")
+                return
+            }
+            expectedErrorHandler(error)
         }
         task.resume()
         waitForExpectations(timeout: 2)
