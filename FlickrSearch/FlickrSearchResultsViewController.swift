@@ -54,15 +54,15 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     // MARK: - UISearchBarDelegate
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchResultsUpdater.updateSearchResults(for: searchText)
+        searchResultsLoader.updateSearchResults(for: searchText)
     }
     
     // MARK: - CollectionViewLoadOnScrollTriggerDelegate
     
     func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView) {
         assert(collectionView == self.collectionView)
-        if !searchResultsUpdater.loading {
-            searchResultsUpdater.loadMore()
+        if !searchResultsLoader.loading {
+            searchResultsLoader.loadMore()
         }
     }
     
@@ -70,7 +70,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
     
-    private lazy var searchResultsUpdater = FlickrSearchResultsUpdater() … {
+    private lazy var searchResultsLoader = FlickrSearchResultsLoader() … {
         $0.delegate = searchResultsController
     }
     

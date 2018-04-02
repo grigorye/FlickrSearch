@@ -9,23 +9,23 @@
 import Foundation.NSIndexPath
 
 /// Think of NSFetchedResultsController combined with NSManagedObjectContext.
-class FlickrSearchResultsController : FlickrSearchResultsUpdaterDelegate, PhotosDataSource {
+class FlickrSearchResultsController : FlickrSearchResultsLoaderDelegate, PhotosDataSource {
     
     init(delegate: FlickrSearchResultsControllerDelegate) {
         self.delegate = delegate
     }
     
-    // MARK: - FlickrSearchResultsUpdaterDelegate
+    // MARK: - FlickrSearchResultsLoaderDelegate
     
-    func flickrSearchResultsUpdaterDidResetSearch(_ updater: FlickrSearchResultsUpdater) {
-        let text = updater.search.text
+    func flickrSearchResultsLoaderDidResetSearch(_ loader: FlickrSearchResultsLoader) {
+        let text = loader.search.text
         _ = x$(text)
         photos = []
         delegate.searchResultsControllerDidResetSearch(self)
     }
     
-    func flickrSearchResultsUpdater(_ updater: FlickrSearchResultsUpdater, didLoadMorePhotos morePhotos: [Photo]) {
-        let text = updater.search.text
+    func flickrSearchResultsLoader(_ loader: FlickrSearchResultsLoader, didLoadMorePhotos morePhotos: [Photo]) {
+        let text = loader.search.text
         _ = x$(text)
         let oldPhotosCount = x$(photos.count)
         photos += morePhotos

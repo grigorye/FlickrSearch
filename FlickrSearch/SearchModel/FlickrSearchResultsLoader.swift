@@ -8,30 +8,30 @@
 
 import Foundation.NSDate
 
-protocol FlickrSearchResultsUpdaterDelegate : class {
+protocol FlickrSearchResultsLoaderDelegate : class {
     
-    func flickrSearchResultsUpdaterDidResetSearch(_ updater: FlickrSearchResultsUpdater)
+    func flickrSearchResultsLoaderDidResetSearch(_ loader: FlickrSearchResultsLoader)
     
-    func flickrSearchResultsUpdater(_ updater: FlickrSearchResultsUpdater, didLoadMorePhotos morePhotos: [Photo])
+    func flickrSearchResultsLoader(_ loader: FlickrSearchResultsLoader, didLoadMorePhotos morePhotos: [Photo])
 }
 
-class FlickrSearchResultsUpdater {
+class FlickrSearchResultsLoader {
     
     var search: FlickrSearch!
     var page: Int!
     
-    weak var delegate: FlickrSearchResultsUpdaterDelegate!
+    weak var delegate: FlickrSearchResultsLoaderDelegate!
     
-    // MARK: - FlickrSearchResultsUpdaterDelegate
+    // MARK: -
     
     private func didLoadMorePhotos(_ photos: [Photo]) {
         page = page + 1
-        delegate.flickrSearchResultsUpdater(self, didLoadMorePhotos: photos)
+        delegate.flickrSearchResultsLoader(self, didLoadMorePhotos: photos)
     }
     
     private func didResetSearch() {
         page = 1
-        delegate.flickrSearchResultsUpdaterDidResetSearch(self)
+        delegate.flickrSearchResultsLoaderDidResetSearch(self)
     }
 
     // MARK: -
