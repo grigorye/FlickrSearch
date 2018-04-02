@@ -63,7 +63,30 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
         collectionViewLoadMoreTrigger.triggerLoadMoreIfNecessary(for: collectionView!)
     }
     
-    // MARK: - CollectionViewLoadOnScrollTriggerDelegate
+    // MARK: - CollectionViewLoadMoreTriggerDelegate
+    
+    func shouldLoadMoreFor(_ trigger: CollectionViewLoadMoreTrigger) -> Bool {
+        guard nil != searchResultsLoader.search else {
+            return false
+        }
+        
+        guard !searchResultsLoader.loading else {
+            return false
+        }
+        
+        let collectionView = self.collectionView!
+        
+        let heightToBeScrolled = x$(collectionView.contentSize.height) - x$(collectionView.contentOffset.y) - x$(collectionView.bounds.height)
+
+        let heightToBeScrolledForLoadMore = CGFloat(UserDefaults.standard.double(forKey: "heightToBeScrolledForLoadMore"))
+        assert(0 < heightToBeScrolledForLoadMore)
+        
+        guard x$(heightToBeScrolled) < heightToBeScrolledForLoadMore else {
+            return false
+        }
+        
+        return true
+    }
     
     func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView) {
         assert(collectionView == self.collectionView)
@@ -84,18 +107,25 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     
     private lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
     
-    private lazy var collectionViewLoadMoreTrigger = CollectionViewLoadMoreTrigger(delegate: self, numberOfScrollableItemsForTrigger: 50)
+    private lazy var collectionViewLoadMoreTrigger = CollectionViewLoadMoreTrigger(delegate: self)
 }
 
 extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
-        let defaultNumberOfColumns = UserDefaults.standard.integer(forKey: "numberOfColumnsInSearchResults")
-        let numberOfColumns = (defaultNumberOfColumns == 0) ? 3 : defaultNumberOfColumns
+    func itemSize() -> CGSize {
+        let collectionView = self.collectionView!
+        
+        let numberOfColumns = UserDefaults.standard.integer(forKey: "numberOfColumnsInSearchResults")
+        assert(0 < numberOfColumns)
+        
         let collectionViewFlowLayout = collectionViewLayout as! UICollectionViewFlowLayout
         let side = (collectionView.bounds.size.width - collectionViewFlowLayout.minimumInteritemSpacing * CGFloat(numberOfColumns - 1)) / CGFloat(numberOfColumns)
-
+        
         return CGSize(width: side, height: side + min(side * 0.4, 50))
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        return itemSize()
     }
 }
