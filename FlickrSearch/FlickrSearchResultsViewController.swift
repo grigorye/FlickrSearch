@@ -81,10 +81,11 @@ extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        let numberOfColumns = 3
+        let defaultNumberOfColumns = UserDefaults.standard.integer(forKey: "numberOfColumnsInSearchResults")
+        let numberOfColumns = (defaultNumberOfColumns == 0) ? 3 : defaultNumberOfColumns
         let collectionViewFlowLayout = collectionViewLayout as! UICollectionViewFlowLayout
         let side = (collectionView.bounds.size.width - collectionViewFlowLayout.minimumInteritemSpacing * CGFloat(numberOfColumns - 1)) / CGFloat(numberOfColumns)
 
-        return CGSize(width: side, height: side + 50)
+        return CGSize(width: side, height: side + min(side * 0.4, 50))
     }
 }
