@@ -13,11 +13,8 @@ import ObjectiveC
 
 class CollectionViewLoadMoreTrigger : NSObject, UIScrollViewDelegate {
     
-    let numberOfScrollableItemsForTrigger: Int
-    
-    init(delegate: CollectionViewLoadMoreTriggerDelegate, numberOfScrollableItemsForTrigger: Int) {
+    init(delegate: CollectionViewLoadMoreTriggerDelegate) {
         self.delegate = delegate
-        self.numberOfScrollableItemsForTrigger = numberOfScrollableItemsForTrigger
     }
 
     func prepareCollectionView(_ collectionView: UICollectionView) {
@@ -34,14 +31,7 @@ class CollectionViewLoadMoreTrigger : NSObject, UIScrollViewDelegate {
     // MARK: -
     
     func shouldLoadMore(for collectionView: UICollectionView) -> Bool {
-        guard let indexPathForLastVisibleItem = collectionView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row }).last else {
-            return false
-        }
-        
-        guard (collectionView.numberOfItems(inSection: 0) - indexPathForLastVisibleItem.row) < numberOfScrollableItemsForTrigger else {
-            return false
-        }
-        return true
+        return delegate.shouldLoadMoreFor(self)
     }
     
     // MARK: - UIScrollViewDelegate
@@ -76,6 +66,7 @@ class CollectionViewLoadMoreTrigger : NSObject, UIScrollViewDelegate {
 
 protocol CollectionViewLoadMoreTriggerDelegate : class {
     
+    func shouldLoadMoreFor(_ trigger: CollectionViewLoadMoreTrigger) -> Bool
     func triggerLoadMore(_ trigger: CollectionViewLoadMoreTrigger, for collectionView: UICollectionView)
 }
 
