@@ -13,6 +13,7 @@ import Foundation.NSObject
 private let cellReuseIdentifier = "FlickrSearchResultItemCell"
 private let cellNibName = "FlickrSearchResultItemCell"
 
+/// (Passive) search results collection view data source.
 class FlickrSearchResultsCollectionViewDataSource : NSObject, UICollectionViewDataSource {
 
     init(dataSource: PhotosDataSource) {
