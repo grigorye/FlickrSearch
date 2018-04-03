@@ -47,6 +47,8 @@ enum FlickrSearchError: Swift.Error {
     case flickrFail(FlickrFail)
 }
 
+let flickrDefaultPerPage = 100
+
 extension URLSession {
     
     func completeDataTaskForFlickrSearch(_ data: Data?, _ response: URLResponse?, _ error: Error?) throws -> FlickrPhotosSearchResult {
@@ -83,9 +85,9 @@ extension URLSession {
         }
     }
     
-    func dataTaskForFlickrSearch(apiKey: String, text: String, date: Date, page: Int = 1, completion: @escaping (ValueOrError<FlickrPhotosSearchResult>) -> Void) -> URLSessionDataTask {
+    func dataTaskForFlickrSearch(apiKey: String, text: String, date: Date, page: Int = 1, perPage: Int = flickrDefaultPerPage, completion: @escaping (ValueOrError<FlickrPhotosSearchResult>) -> Void) -> URLSessionDataTask {
         let percentEscapedText = text.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-        let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&format=json&nojsoncallback=1&safe_search=1&page=\(page)&text=\(percentEscapedText)")!
+        let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&format=json&nojsoncallback=1&safe_search=1&page=\(page)&per_page=\(perPage)&text=\(percentEscapedText)")!
         
         let task = dataTask(with: x$(url)) { (data, response, error) in
             completion(ValueOrError {
