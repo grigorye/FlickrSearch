@@ -6,14 +6,14 @@
 //  Copyright © 2018 Grigory Entin. All rights reserved.
 //
 
-import XCTest
 @testable import FlickrSearch
+import XCTest
 
 class FlickrSearchRequestsOnlineTests: XCTestCase {
     
     // MARK: - Goods
     
-    func test(with text: String, page: Int = 1) {
+    func test(with text: String, page: Int = 1, expectEmpty: Bool = false) {
         let session = URLSession(configuration: .default)
         let taskCompleted = expectation(description: "Task completed")
         let task = session.dataTaskForFlickrSearch(apiKey: apiKey, text: text, date: Date(), page: page) { (searchResultOrError) in
@@ -22,7 +22,11 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
                 XCTFail("\(searchResultOrError.error!)")
                 return
             }
-            XCTAssert(0 < searchResult.photos.photo.count)
+            if expectEmpty {
+                XCTAssertEqual(0, searchResult.photos.photo.count)
+            } else {
+                XCTAssert(0 < searchResult.photos.photo.count)
+            }
             _ = x$(searchResult.photos.total)
             _ = x$(searchResult.photos.photo.last)
         }
@@ -42,6 +46,14 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
         test(with: "Котята ❤️")
     }
     
+    func testOne() {
+        test(with: "Kittens ABCD")
+    }
+    
+    func testEmpty() {
+        test(with: "Kittens ABCDE", expectEmpty: true)
+    }
+
     // MARK: - Bads
 
     func test(with text: String, expectedErrorHandler: @escaping (Error) -> Void) {
