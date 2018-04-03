@@ -30,12 +30,12 @@ class FlickrSearchResultItemCell : UICollectionViewCell {
                     guard dataTask! === self.dataTask else {
                         return
                     }
-                    self.completePhotoLoad(x$(data), x$(response), x$(error))
+                    self.completePhotoLoad(x$(data), (response), x$(error))
                 }
             }
             self.dataTask = dataTask
             if let cachedResponse = sessionConfiguration.urlCache?.cachedResponse(for: dataTask.currentRequest!) {
-                completePhotoLoad(x$(cachedResponse.data), x$(cachedResponse.response), nil)
+                completePhotoLoad(x$(cachedResponse.data), (cachedResponse.response), nil)
             } else {
                 x$(dataTask).resume()
             }
