@@ -150,6 +150,8 @@ extension FlickrSearchResultsViewController {
     }
 }
 
+// MARK: - ItemSize
+
 extension FlickrSearchResultsViewController {
     
     var collectionViewFlowLayout: UICollectionViewFlowLayout {
