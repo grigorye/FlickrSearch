@@ -83,10 +83,23 @@
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="L19-ER-qTo">
                             <size key="itemSize" width="166" height="141"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="50" height="50"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells/>
+                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="footer" id="bXz-7R-6Kf">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EQq-tU-lNb">
+                                    <rect key="frame" x="177" y="15" width="20" height="20"/>
+                                </activityIndicatorView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="EQq-tU-lNb" firstAttribute="centerY" secondItem="bXz-7R-6Kf" secondAttribute="centerY" id="ecj-EW-b3o"/>
+                                <constraint firstItem="EQq-tU-lNb" firstAttribute="centerX" secondItem="bXz-7R-6Kf" secondAttribute="centerX" id="mHd-6J-5QG"/>
+                            </constraints>
+                        </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="lOV-iA-xeO" id="cM0-M9-g38"/>
                             <outlet property="delegate" destination="lOV-iA-xeO" id="ldj-z9-4Cu"/>

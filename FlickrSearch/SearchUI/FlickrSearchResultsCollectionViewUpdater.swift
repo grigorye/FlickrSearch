@@ -15,39 +15,55 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
     
     init(collectionView: UICollectionView) {
         self.collectionView = collectionView
+        super.init()
+        prepareLoadMore()
+    }
+    
+    /// MARK: -
+    
+    private func prepareLoadMore() {
+        savedFooterReferenceSize = collectionViewFlowLayout.footerReferenceSize
+        hideLoadMore()
+    }
+    
+    private func unhideLoadMore() {
+        collectionViewFlowLayout.footerReferenceSize = savedFooterReferenceSize
+    }
+    
+    private func hideLoadMore() {
+        collectionViewFlowLayout.footerReferenceSize = .zero
     }
 
+    private var collectionViewFlowLayout: UICollectionViewFlowLayout {
+        return (collectionView.collectionViewLayout as! UICollectionViewFlowLayout)
+    }
+    
     // MARK: - FlickrSearchResultsControllerDelegate
     
     func searchResultsControllerDidResetSearch(_ controller: FlickrSearchResultsController) {
         collectionView.reloadData()
+        hideLoadMore()
     }
     
-    private var batchUpdatesFinished = true
-
     func searchResultsController(_ controller: FlickrSearchResultsController, didLoadMorePhotosAt indexPaths: [IndexPath]) {
-        assert(x$(batchUpdatesFinished) || true)
-        /*if (controller.photos.count - indexPaths.count) == 0 { // http://openradar.appspot.com/12954582
-            collectionView.reloadData()
-        } else*/ do {
-            batchUpdatesFinished = false
-            collectionView.performBatchUpdates({
-                collectionView.insertItems(at: indexPaths)
-            }, completion: { (finished) in
-                _ = x$(finished)
-                assert(finished)
-                self.batchUpdatesFinished = true
-            })
-        }
+        collectionView.performBatchUpdates({
+            collectionView.insertItems(at: indexPaths)
+        }, completion: { (finished) in
+            _ = x$(finished)
+            assert(finished)
+        })
+        unhideLoadMore()
     }
 
     func searchResultsControllerDidCompleteLoad(_ controller: FlickrSearchResultsController) {
         _ = x$(controller)
+        hideLoadMore()
     }
     
     // MARK: -
     
     let collectionView: UICollectionView
+    private var savedFooterReferenceSize: CGSize!
 }
 
 protocol FlickrSearchResultsCollectionViewUpdaterDelegate : class {

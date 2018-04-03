@@ -51,6 +51,12 @@ class FlickrSearchResultsCollectionViewDataSource : NSObject, UICollectionViewDa
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        assert(kind == UICollectionElementKindSectionFooter)
+        let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "footer", for: indexPath)
+        return footerView
+    }
+    
     // MARK: -
     
     let dataSource: PhotosDataSource
