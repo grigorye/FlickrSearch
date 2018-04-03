@@ -24,6 +24,7 @@ class FlickrSearchResultsLoader {
         didResetSearch()
 
         guard text.trimmingCharacters(in: CharacterSet.whitespaces) != "" else {
+            didCompleteLoad()
             // Flickr doesn't support search with no text.
             return
         }
@@ -33,11 +34,11 @@ class FlickrSearchResultsLoader {
     
     private(set) var loading = false
     
-    func loadMore() {
+    func loadMore(perPage: Int = flickrDefaultPerPage) {
         assert(!loadCompleted)
         let search = self.search!
         loading = true
-        search.loadMore(page: page) { [oldSearch = search] (searchResultOrError) in
+        search.loadMore(page: page, perPage: perPage) { [oldSearch = search] (searchResultOrError) in
             DispatchQueue.main.async {
                 guard x$(oldSearch === self.search) else {
                     // Ignore no longer actual completion.
@@ -58,7 +59,7 @@ class FlickrSearchResultsLoader {
                 let photos = x$(searchResult).photos.photo
                 self.didLoadMorePhotos(photos)
                 
-                if searchResult.photos.page == searchResult.photos.pages {
+                if searchResult.photos.page >= searchResult.photos.pages {
                     self.didCompleteLoad()
                 }
             }
@@ -69,17 +70,18 @@ class FlickrSearchResultsLoader {
     
     private func didLoadMorePhotos(_ photos: [Photo]) {
         page = page + 1
-        delegate.flickrSearchResultsLoader(self, didLoadMorePhotos: photos)
+        delegate?.flickrSearchResultsLoader(self, didLoadMorePhotos: photos)
     }
     
     private func didResetSearch() {
         page = 1
         loadCompleted = false
-        delegate.flickrSearchResultsLoaderDidResetSearch(self)
+        delegate?.flickrSearchResultsLoaderDidResetSearch(self)
     }
     
     private func didCompleteLoad() {
         loadCompleted = true
+        delegate?.flickrSearchResultsLoaderDidCompleteLoad(self)
     }
     
     // MARK: -
