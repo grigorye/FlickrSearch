@@ -15,17 +15,8 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let collectionView = self.collectionView!
-        
-        collectionViewDataSource.prepareCollectionView(collectionView)
-        
-        let searchBar = UISearchBar() … {
-            $0.delegate = self
-            $0.placeholder = NSLocalizedString("Search", comment: "")
-            $0.sizeToFit()
-        }
-        navigationItem.titleView = searchBar
-        searchBar.becomeFirstResponder()
+        configureDataSource()
+        configureSearchInput()
     }
     
     // MARK: - Segues
@@ -44,19 +35,29 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
         }
     }
 
-    // MARK: - Collection View
+    // MARK: - RoutingToDetailView
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         performSegue(withIdentifier: showDetailSegueIdentifier, sender: self)
     }
     
-    // MARK: - UISearchBarDelegate
+    // MARK: - InitiatingSearch (UISearchBarDelegate)
+    
+    func configureSearchInput() {
+        let searchBar = UISearchBar() … {
+            $0.delegate = self
+            $0.placeholder = NSLocalizedString("Search", comment: "")
+            $0.sizeToFit()
+        }
+        navigationItem.titleView = searchBar
+        searchBar.becomeFirstResponder()
+    }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchResultsLoader.updateSearchResults(for: searchText)
     }
     
-    // MARK: - EntryPointsForLoadMoreTriggers
+    // MARK: - TriggeringLoadMore
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         triggerLoadMoreIfNecessary()
@@ -68,15 +69,38 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
         triggerLoadMoreIfNecessary()
     }
     
-    // MARK: -
+    // MARK: - MaintainingItemSize
     
-    private lazy var collectionViewUpdater = FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!)
+    lazy var onceInViewWillLayoutSubviews: () = {
+        collectionViewFlowLayout.itemSize = itemSize(forCollectionViewSize: collectionView!.bounds.size)
+    }()
     
-    private lazy var searchResultsLoader = FlickrSearchResultsLoader(delegate: searchResultsController)
-
-    private lazy var searchResultsController = FlickrSearchResultsController(delegate: collectionViewUpdater)
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        _ = onceInViewWillLayoutSubviews
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        collectionViewFlowLayout.itemSize = itemSize(forCollectionViewSize: size)
+    }
+    
+    // MARK: - DataSource
+    
+    func configureDataSource() {
+        let collectionView = self.collectionView!
+        
+        collectionViewDataSource.prepareCollectionView(collectionView)
+    }
     
     private lazy var collectionViewDataSource = FlickrSearchResultsCollectionViewDataSource(dataSource: searchResultsController)
+    
+    // MARK: - SharedProperties
+    
+    private lazy var searchResultsController = FlickrSearchResultsController(delegate: FlickrSearchResultsCollectionViewUpdater(collectionView: collectionView!))
+    
+    private lazy var searchResultsLoader = FlickrSearchResultsLoader(delegate: searchResultsController)
 }
 
 // MARK: - LoadMore
@@ -115,29 +139,32 @@ extension FlickrSearchResultsViewController {
         return true
     }
     
+    var perPage: Int {
+        return (flickrDefaultPerPage - flickrDefaultPerPage % numberOfColumns) - searchResultsController.photos.count % numberOfColumns
+    }
+    
     private func triggerLoadMore() {
         if !searchResultsLoader.loading {
-            searchResultsLoader.loadMore()
+            searchResultsLoader.loadMore(perPage: x$(perPage))
         }
     }
 }
 
-extension FlickrSearchResultsViewController : UICollectionViewDelegateFlowLayout {
+extension FlickrSearchResultsViewController {
     
-    func itemSize() -> CGSize {
-        let collectionView = self.collectionView!
-        
-        let numberOfColumns = UserDefaults.standard.integer(forKey: "numberOfColumnsInSearchResults")
-        assert(0 < numberOfColumns)
-        
-        let collectionViewFlowLayout = collectionViewLayout as! UICollectionViewFlowLayout
-        let side = (collectionView.bounds.size.width - collectionViewFlowLayout.minimumInteritemSpacing * CGFloat(numberOfColumns - 1)) / CGFloat(numberOfColumns)
-        
-        return CGSize(width: side, height: side + min(side * 0.4, 50))
+    var collectionViewFlowLayout: UICollectionViewFlowLayout {
+        return collectionViewLayout as! UICollectionViewFlowLayout
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
-        return itemSize()
+    var numberOfColumns: Int {
+        let numberOfColumns = UserDefaults.standard.integer(forKey: "numberOfColumnsInSearchResults")
+        assert(0 < numberOfColumns)
+        return numberOfColumns
+    }
+    
+    func itemSize(forCollectionViewSize collectionViewSize: CGSize) -> CGSize {
+        let side = (collectionViewSize.width - collectionViewFlowLayout.minimumInteritemSpacing * CGFloat(numberOfColumns - 1)) / CGFloat(numberOfColumns)
+        
+        return CGSize(width: side, height: side + min(side * 0.4, 50))
     }
 }
