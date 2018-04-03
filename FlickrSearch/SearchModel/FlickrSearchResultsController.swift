@@ -8,7 +8,7 @@
 
 import Foundation.NSIndexPath
 
-/// Think of NSFetchedResultsController combined with NSManagedObjectContext.
+/// Accumulates the loaded search results. Similar to NSFetchedResultsController. Should be attached to FlickrSearchResultsLoader.
 class FlickrSearchResultsController : FlickrSearchResultsLoaderDelegate, PhotosDataSource {
     
     init(delegate: FlickrSearchResultsControllerDelegate) {
