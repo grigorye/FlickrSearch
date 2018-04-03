@@ -8,42 +8,11 @@
 
 import Foundation.NSDate
 
-protocol FlickrSearchResultsLoaderDelegate : class {
-    
-    func flickrSearchResultsLoaderDidResetSearch(_ loader: FlickrSearchResultsLoader)
-    
-    func flickrSearchResultsLoader(_ loader: FlickrSearchResultsLoader, didLoadMorePhotos morePhotos: [Photo])
-    
-    func flickrSearchResultsLoaderDidCompleteLoad(_ loader: FlickrSearchResultsLoader)
-}
-
+/// Maintaints a sequence of (text based) flickr photos search requests, with ability to restart with a new text. Delivers results via delegate.
 class FlickrSearchResultsLoader {
     
     init(delegate: FlickrSearchResultsLoaderDelegate) {
         self.delegate = delegate
-    }
-    
-    private(set) var search: FlickrSearch!
-    private(set) var loadCompleted = false
-    private(set) weak var delegate: FlickrSearchResultsLoaderDelegate!
-    
-    private var page: Int!
-    
-    // MARK: -
-    
-    private func didLoadMorePhotos(_ photos: [Photo]) {
-        page = page + 1
-        delegate.flickrSearchResultsLoader(self, didLoadMorePhotos: photos)
-    }
-    
-    private func didResetSearch() {
-        page = 1
-        loadCompleted = false
-        delegate.flickrSearchResultsLoaderDidResetSearch(self)
-    }
-
-    private func didCompleteLoad() {
-        loadCompleted = true
     }
     
     // MARK: -
@@ -95,4 +64,38 @@ class FlickrSearchResultsLoader {
             }
         }
     }
+    
+    // MARK: -
+    
+    private func didLoadMorePhotos(_ photos: [Photo]) {
+        page = page + 1
+        delegate.flickrSearchResultsLoader(self, didLoadMorePhotos: photos)
+    }
+    
+    private func didResetSearch() {
+        page = 1
+        loadCompleted = false
+        delegate.flickrSearchResultsLoaderDidResetSearch(self)
+    }
+    
+    private func didCompleteLoad() {
+        loadCompleted = true
+    }
+    
+    // MARK: -
+    
+    private(set) var search: FlickrSearch!
+    private(set) var loadCompleted = false
+    private(set) weak var delegate: FlickrSearchResultsLoaderDelegate!
+    
+    private var page: Int!
+}
+
+protocol FlickrSearchResultsLoaderDelegate : class {
+    
+    func flickrSearchResultsLoaderDidResetSearch(_ loader: FlickrSearchResultsLoader)
+    
+    func flickrSearchResultsLoader(_ loader: FlickrSearchResultsLoader, didLoadMorePhotos morePhotos: [Photo])
+    
+    func flickrSearchResultsLoaderDidCompleteLoad(_ loader: FlickrSearchResultsLoader)
 }
