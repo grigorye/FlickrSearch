@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="74 68 350 350" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <pattern id="pattern-0" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse" viewBox="0 0 100 100">
+      <path d="M 0 0 L 50 0 L 50 100 L 0 100 Z" style="fill: black;"/>
+    </pattern>
+  </defs>
+  <rect x="74" y="68" width="350" height="350" transform="matrix(0, 1, -1, 0, 492, -5.999991)" style="fill: rgb(0, 151, 94);"/>
+  <path d="M 247 318 m -124 0 a 124 124.034 0 1 0 248 0 a 124 124.034 0 1 0 -248 0 Z M 247 318 m -74.401 0 a 74.401 74.42 0 0 1 148.802 0 a 74.401 74.42 0 0 1 -148.802 0 Z" transform="matrix(-0.656175, 0.754609, -0.754601, -0.656183, 651.038477, 265.27795)" style="fill: rgb(255, 255, 255);" bx:shape="ring 247 318 74.401 74.42 124 124.034 1@648217a9"/>
+  <path d="M 0 0 m -0.668 0 a 0.668 0.668 0 1 0 1.336 0 a 0.668 0.668 0 1 0 -1.336 0 Z M 0 0 m 0 0 a 0 0 0 0 1 0 0 a 0 0 0 0 1 0 0 Z" style="fill: rgb(216, 216, 216);" transform="matrix(0.999999, 0, 0, 1, 35.259544, -13.488548)" bx:shape="ring 0 0 0 0 0.668 0.668 1@528bc465"/>
+</svg>
