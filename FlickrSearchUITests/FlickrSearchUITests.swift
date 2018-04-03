@@ -75,4 +75,22 @@ class FlickrSearchUITests: XCTestCase {
     func testTypingWithLongEnoughDelay() {
         testTyping(delay: 0.5)
     }
+    
+    func testScrollToEnd() {
+        let app = XCUIApplication()
+        let searchField = app.searchFields["Search"]
+        searchField.tap()
+        searchField.typeText("Kitten ABC")
+        
+        let collectionView = app.collectionViews.element
+        
+        // Swipe up at the *top row* to dismiss keyboard, if any.
+        let topCoordinate = app.statusBars.element.coordinate(withNormalizedOffset: .zero)
+        let cell = collectionView.cells.firstMatch.coordinate(withNormalizedOffset: .zero)
+        cell.press(forDuration: 0.1, thenDragTo: topCoordinate)
+        
+        for _ in 0..<20 {
+            collectionView.swipeUp()
+        }
+    }
 }
