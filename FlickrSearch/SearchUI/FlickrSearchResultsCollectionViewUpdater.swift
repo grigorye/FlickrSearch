@@ -10,11 +10,11 @@ import UIKit.UICollectionView
 import Foundation.NSIndexPath
 import Foundation.NSObject
 
+/// Synchronizes the fetched search results with the collection view.
 class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsControllerDelegate {
     
-    init(collectionView: UICollectionView, delegate: FlickrSearchResultsCollectionViewUpdaterDelegate) {
+    init(collectionView: UICollectionView) {
         self.collectionView = collectionView
-        self.delegate = delegate
     }
 
     // MARK: - FlickrSearchResultsControllerDelegate
@@ -37,7 +37,6 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
                 _ = x$(finished)
                 assert(finished)
                 self.batchUpdatesFinished = true
-                self.delegate.flickrSearchResultsCollectionViewUpdaterDidUpdate(self)
             })
         }
     }
@@ -49,7 +48,6 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
     // MARK: -
     
     let collectionView: UICollectionView
-    weak var delegate: FlickrSearchResultsCollectionViewUpdaterDelegate!
 }
 
 protocol FlickrSearchResultsCollectionViewUpdaterDelegate : class {
