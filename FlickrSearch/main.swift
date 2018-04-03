@@ -16,8 +16,6 @@ import UIKit.UIApplication
 import func GEFoundation.defaultLogger
 import var GETracing.loggers
 
-UserDefaults.standard.register(defaults: ["traceEnabled":true, "defaultLogKind":"print", "sourceLabelsEnabled":true])
-
 loggers += [
     defaultLogger
 ]
