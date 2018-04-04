@@ -36,7 +36,7 @@
 			<key>Key</key>
 			<string>heightToBeScrolledForLoadMore</string>
 			<key>DefaultValue</key>
-			<integer>2000</integer>
+			<integer>10000</integer>
 			<key>Titles</key>
 			<array>
 				<string>Tiny</string>
