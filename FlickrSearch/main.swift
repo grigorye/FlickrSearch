@@ -25,7 +25,7 @@ loggers += [
 let defaultsPlistURL = Bundle.main.url(forResource: "Settings", withExtension: "bundle")!.appendingPathComponent("Root.plist")
 try! loadDefaultsFromSettingsPlistAtURL(defaultsPlistURL)
 
-UIApplicationMain(
+_ = UIApplicationMain(
     CommandLine.argc,
     UnsafeMutableRawPointer(CommandLine.unsafeArgv)
         .bindMemory(
