@@ -17,6 +17,8 @@ private let sessionConfiguration = URLSessionConfiguration.default … {
 
 private let session = URLSession(configuration: sessionConfiguration, delegate: nil, delegateQueue: nil)
 
+private let thumbnailCache = URLImageCache(countLimit: 50)
+
 class FlickrSearchResultItemCell : UICollectionViewCell {
     
     private var dataTask: URLSessionDataTask!
@@ -24,28 +26,41 @@ class FlickrSearchResultItemCell : UICollectionViewCell {
     var photo: Photo! {
         didSet {
             textLabel.text = photo.title
+            if let cachedImage = thumbnailCache.image(for: photo?.largeSquareURL) {
+                imageView.image = cachedImage
+                return
+            }
             var dataTask: URLSessionDataTask!
             dataTask = session.dataTask(with: photo.largeSquareURL) { (data, response, error) in
                 DispatchQueue.main.async {
                     guard dataTask! === self.dataTask else {
                         return
                     }
-                    self.completePhotoLoad(x$(data), (response), x$(error))
+                    _ = x$((data: data, error: error))
+                    self.completePhotoLoad(data, response, error)
                 }
             }
             self.dataTask = dataTask
             if let cachedResponse = sessionConfiguration.urlCache?.cachedResponse(for: dataTask.currentRequest!) {
-                completePhotoLoad(x$(cachedResponse.data), (cachedResponse.response), nil)
+                let data = cachedResponse.data
+                let response = cachedResponse.response
+                _ = x$(data, name: "cachedResponseData")
+                completePhotoLoad(data, response, nil)
             } else {
-                x$(dataTask).resume()
+                x$(dataTask, name: "nonCachedDataTask").resume()
             }
         }
     }
     
     private func completePhotoLoad(_ data: Data?, _ response: URLResponse?, _ error: Error?) {
+        if let cachedImage = thumbnailCache.image(for: response?.url) {
+            imageView.image = cachedImage
+            return
+        }
         if UserDefaults.standard.bool(forKey: "decompressThumbnailsInBackground") {
             DispatchQueue.global().async { [dataTask = self.dataTask!] in
                 let image = UIImage.image(forData: data, response, error)
+                thumbnailCache.add(image, for: response)
                 DispatchQueue.main.async {
                     guard dataTask === self.dataTask else {
                         return
@@ -54,7 +69,9 @@ class FlickrSearchResultItemCell : UICollectionViewCell {
                 }
             }
         } else {
-            setImageView(imageView, from: data, response, error)
+            let image = UIImage.image(forData: data, response, error)
+            imageView.image = image
+            thumbnailCache.add(image, for: response)
         }
     }
     
@@ -62,8 +79,8 @@ class FlickrSearchResultItemCell : UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        x$(dataTask)?.cancel()
+        _ = x$(dataTask, name: "canceledDataTask")
+        dataTask?.cancel()
         dataTask = nil
         imageView.image = nil
     }
