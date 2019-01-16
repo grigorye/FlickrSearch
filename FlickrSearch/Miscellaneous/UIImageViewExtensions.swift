@@ -11,19 +11,19 @@ import UIKit.UIImageView
 extension UIImage {
     class func image(forData data: Data?, _ response: URLResponse?, _ error: Error?) -> UIImage? {
         if let error = error {
-            _ = x$(error)
+            _ = x$(error, name: "error")
             return nil
         }
         guard let httpResponse = response as? HTTPURLResponse else {
-            _ = x$(response)
+            _ = x$(response, name: "nonHTTPURLResponse")
             return nil
         }
         guard 200 == httpResponse.statusCode else {
-            _ = x$(httpResponse)
+            _ = x$(httpResponse, name: "nonHTTPOKResponse")
             return nil
         }
         guard let data = data else {
-            _ = x$(Data?.none)
+            _ = x$(Data?.none, name: "noData")
             return nil
         }
         return UIImage(data: data)!
@@ -31,5 +31,6 @@ extension UIImage {
 }
 
 func setImageView(_ imageView: UIImageView, from data: Data?, _ response: URLResponse?, _ error: Error?) {
-    imageView.image = UIImage.image(forData: data, response, error)
+    let image = UIImage.image(forData: data, response, error)
+    imageView.image = image
 }

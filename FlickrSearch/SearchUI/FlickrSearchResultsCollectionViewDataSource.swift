@@ -40,7 +40,7 @@ class FlickrSearchResultsCollectionViewDataSource : NSObject, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return x$(dataSource.photos.count)
+        return x$(dataSource.photos.count, name: "photosCount")
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

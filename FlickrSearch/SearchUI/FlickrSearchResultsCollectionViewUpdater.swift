@@ -49,7 +49,7 @@ class FlickrSearchResultsCollectionViewUpdater : NSObject, FlickrSearchResultsCo
         collectionView.performBatchUpdates({
             collectionView.insertItems(at: indexPaths)
         }, completion: { (finished) in
-            _ = x$(finished)
+            _ = x$(finished, name: "finished")
             assert(finished)
         })
         unhideLoadMore()

@@ -19,15 +19,15 @@ class FlickrSearchResultsController : FlickrSearchResultsLoaderDelegate, PhotosD
     
     func flickrSearchResultsLoaderDidResetSearch(_ loader: FlickrSearchResultsLoader) {
         let text = loader.search.text
-        _ = x$(text)
+        _ = x$(text, name: "text")
         photos = []
         delegate.searchResultsControllerDidResetSearch(self)
     }
     
     func flickrSearchResultsLoader(_ loader: FlickrSearchResultsLoader, didLoadMorePhotos morePhotos: [Photo]) {
         let text = loader.search.text
-        _ = x$(text)
-        let oldPhotosCount = x$(photos.count)
+        let oldPhotosCount = photos.count
+        _ = x$((text: text, oldPhotosCount: oldPhotosCount))
         photos += morePhotos
         let indexPaths = (oldPhotosCount..<photos.count).map { IndexPath(item: $0, section: 0) }
         delegate.searchResultsController(self, didLoadMorePhotosAt: indexPaths)

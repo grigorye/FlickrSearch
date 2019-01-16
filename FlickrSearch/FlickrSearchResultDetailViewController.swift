@@ -21,13 +21,17 @@ class FlickrSearchResultDetailViewController: UIViewController {
     private func configureView() {
         let dataTask = session.dataTask(with: photo.url) { (data, response, error) in
             DispatchQueue.main.async {
-                setImageView(self.imageView, from: x$(data), x$(response), x$(error))
+                _ = x$((data: data, error: error))
+                setImageView(self.imageView, from: data, response, error)
             }
         }
         if let cachedResponse = sessionConfiguration.urlCache?.cachedResponse(for: dataTask.currentRequest!) {
-            setImageView(imageView, from: x$(cachedResponse.data), x$(cachedResponse.response), nil)
+            let data = cachedResponse.data
+            let response = cachedResponse.response
+            _ = x$((data: data, response: response), name: "cachedResponse")
+            setImageView(imageView, from: data, response, nil)
         } else {
-            x$(dataTask).resume()
+            x$(dataTask, name: "nonCachedDataTask").resume()
         }
     }
 

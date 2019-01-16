@@ -26,7 +26,7 @@ class FlickrSearchResultsViewController: UICollectionViewController, UISearchBar
             if let indexPath = collectionView?.indexPathsForSelectedItems?.last {
                 assert(indexPath.section == 0)
                 let photo = searchResultsController.photos[indexPath.row]
-                _ = x$(photo)
+                _ = x$(photo, name: "photo")
                 let controller = (segue.destination as! UINavigationController).topViewController as! FlickrSearchResultDetailViewController
                 controller.photo = photo
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
@@ -145,7 +145,7 @@ extension FlickrSearchResultsViewController {
     
     private func triggerLoadMore() {
         if !searchResultsLoader.loading {
-            searchResultsLoader.loadMore(perPage: x$(perPage))
+            searchResultsLoader.loadMore(perPage: x$(perPage, name: "perPage"))
         }
     }
 }

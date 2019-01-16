@@ -18,7 +18,7 @@ class FlickrSearchResultsLoader {
     // MARK: -
     
     func updateSearchResults(for text: String) {
-        let search = FlickrSearch(text: x$(text), date: Date())
+        let search = FlickrSearch(text: x$(text, name: "text"), date: Date())
         self.search = search
         
         didResetSearch()
@@ -40,9 +40,9 @@ class FlickrSearchResultsLoader {
         loading = true
         search.loadMore(page: page, perPage: perPage) { [oldSearch = search] (searchResultOrError) in
             DispatchQueue.main.async {
-                guard x$(oldSearch === self.search) else {
+                guard x$(oldSearch === self.search, name: "isOldSearch") else {
                     // Ignore no longer actual completion.
-                    _ = x$(oldSearch.text)
+                    _ = x$(oldSearch.text, name: "oldSearchText")
                     return
                 }
                 
@@ -51,12 +51,11 @@ class FlickrSearchResultsLoader {
                 
                 guard let searchResult = searchResultOrError.value else {
                     let error = searchResultOrError.error!
-                    _ = x$(error)
-                    _ = x$((error as NSError).userInfo)
+                    _ = x$((error: error, userInfo: (error as NSError).userInfo))
                     return
                 }
 
-                let photos = x$(searchResult).photos.photo
+                let photos = x$(searchResult, name: "searchResult").photos.photo
                 self.didLoadMorePhotos(photos)
                 
                 if searchResult.photos.page >= searchResult.photos.pages {

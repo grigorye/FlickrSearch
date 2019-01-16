@@ -27,8 +27,7 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
             } else {
                 XCTAssert(0 < searchResult.photos.photo.count)
             }
-            _ = x$(searchResult.photos.total)
-            _ = x$(searchResult.photos.photo.last)
+            _ = x$((totalPhotos: searchResult.photos.total, lastPhoto: searchResult.photos.photo.last))
         }
         task.resume()
         waitForExpectations(timeout: 2)
@@ -75,7 +74,7 @@ class FlickrSearchRequestsOnlineTests: XCTestCase {
         test(with: "", expectedErrorHandler: { error in
             switch error {
             case FlickrSearchError.flickrFail(let flickrFail) where flickrFail.code == 3:
-                _ = x$(flickrFail.message)
+                _ = x$(flickrFail.message, name: "message")
             default:
                 XCTFail("\(error)")
             }

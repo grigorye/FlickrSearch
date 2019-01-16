@@ -54,20 +54,20 @@ extension URLSession {
     func completeDataTaskForFlickrSearch(_ data: Data?, _ response: URLResponse?, _ error: Error?) throws -> FlickrPhotosSearchResult {
         typealias E = FlickrSearchError
         if let error = error {
-            throw x$(error)
+            throw x$(error, name: "error")
         }
         guard let data = data else {
-            throw x$(E.noData)
+            throw x$(E.noData, name: "noData")
         }
         guard let httpURLResponse = response as? HTTPURLResponse else {
-            throw x$(E.badResponse(response))
+            throw x$(E.badResponse(response), name: "badResponse")
         }
         guard httpURLResponse.statusCode == 200 else {
-            throw x$(E.badHTTPResponseStatus(httpURLResponse, body: OptionallyDecodedString(data)))
+            throw x$(E.badHTTPResponseStatus(httpURLResponse, body: OptionallyDecodedString(data)), name: "badHTTPStatus")
         }
         #if false
         let json = try JSONSerialization.jsonObject(with: data)
-        _ = x$(json)
+        _ = x$(json, name: "json")
         #endif
         let stat = try JSONDecoder().decode(FlickrStat.self, from: data)
         do {
@@ -89,7 +89,7 @@ extension URLSession {
         let percentEscapedText = text.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
         let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&format=json&nojsoncallback=1&safe_search=1&page=\(page)&per_page=\(perPage)&text=\(percentEscapedText)")!
         
-        let task = dataTask(with: x$(url)) { (data, response, error) in
+        let task = dataTask(with: x$(url, name: "url")) { (data, response, error) in
             completion(ValueOrError {
                 try self.completeDataTaskForFlickrSearch(data, response, error)
             })
