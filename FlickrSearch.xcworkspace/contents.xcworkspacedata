@@ -4,10 +4,4 @@
    <FileRef
       location = "group:FlickrSearch.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:../GEFoundation/GEFoundation.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:../GETracing/GETracing.xcodeproj">
-   </FileRef>
 </Workspace>
